@@ -47,25 +47,16 @@ project "AutoNav"
         "src",
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
-        "Dependencies/GLFW/include",
-        "Dependencies/ImGui/include",
-        "Dependencies/tinyfiledialogs/include",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
     externalincludedirs {
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
-        "Dependencies/ImGui/include",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
     links {
-        "glfw",
-        "ImGui",
-        "tinyfiledialogs",
-        
-        -- windows
         "Gdiplus",
         "comctl32",
         "gdi32",
@@ -174,8 +165,3 @@ project "AutoNav"
         kind "WindowedApp"
         links "SimConnect"
         entrypoint "mainCRTStartup"
-        
-
-include "Dependencies/GLFW"
-include "Dependencies/ImGui"
-include "Dependencies/tinyfiledialogs"

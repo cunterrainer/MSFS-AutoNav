@@ -64,31 +64,10 @@ enum DATA_REQUEST_ID {
 };
 
 
-void CALLBACK MyDispatchProcRD(SIMCONNECT_RECV* pData, DWORD, void*)
+void CALLBACK MyDispatchProcRD(SIMCONNECT_RECV* pData, DWORD, void* updated)
 {
-    HRESULT hr;
-
     switch (pData->dwID)
     {
-    case SIMCONNECT_RECV_ID_EVENT:
-    {
-        SIMCONNECT_RECV_EVENT* evt = (SIMCONNECT_RECV_EVENT*)pData;
-
-        switch (evt->uEventID)
-        {
-        case EVENT_SIM_START:
-
-            // Now the sim is running, request information on the user aircraft
-            hr = SimConnect_RequestDataOnSimObjectType(hSimConnect, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER);
-
-            break;
-
-        default:
-            break;
-        }
-        break;
-    }
-
     case SIMCONNECT_RECV_ID_SIMOBJECT_DATA_BYTYPE:
     {
         SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE*)pData;
@@ -139,7 +118,7 @@ void CALLBACK MyDispatchProcRD(SIMCONNECT_RECV* pData, DWORD, void*)
                 printf("Vertical Speed: %.0lf\n", ps->ap_vertical_speed);
 
                 printf("\n\n\n");
-
+                *((bool*)updated) = true;
             }
             break;
         }
@@ -170,7 +149,7 @@ void OnConnect(Fl_Widget* w, void*)
     {
         if (FAILED(SimConnect_Open(&hSimConnect, "Auto Nav", NULL, 0, 0, 0)))
         {
-            return Fl::fatal("Failed to connect to flight simulator"); // TODO add exlpanation code
+            return Fl::error("Failed to connect to flight simulator"); // TODO add exlpanation code
         }
 
 
@@ -206,7 +185,7 @@ void OnConnect(Fl_Widget* w, void*)
     {
         if (FAILED(SimConnect_Close(&hSimConnect))) // TODO: Disconnect on app close
         {
-            return Fl::fatal("Failed to disconnect from flight simulator");
+            return Fl::error("Failed to disconnect from flight simulator");
         }
         w->label("Connect");
         w->color(FL_RED);
@@ -226,6 +205,16 @@ void SetPosition(Fl_Widget* w, void*)
     Init.OnGround = 0;
     Init.Airspeed = 100;
     SimConnect_SetDataOnSimObject(hSimConnect, DEFINITION_6, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(Init), &Init);
+}
+
+
+void OnRefresh(Fl_Widget* w, void*)
+{
+    HRESULT hr = SimConnect_RequestDataOnSimObjectType(hSimConnect, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER);
+    if (FAILED(hr))
+    {
+        Fl::error("Failed to request data");
+    }
 }
 
 
@@ -278,16 +267,20 @@ int main(int argc, char** argv)
 
 
     Fl_Button* o14 = new Fl_Button(375, 20, 100, 22, "Test position");
+    Fl_Button* o15 = new Fl_Button(375, 50, 100, 22, "Refresh @refresh");
     o14->callback(SetPosition, nullptr);
+    o15->callback(OnRefresh, nullptr);
 
     window->resizable(window);
     window->end();
     window->show();
 
+    bool updated = false;
     while (Fl::check())
     {
         Fl::wait(1);
-        if (SUCCEEDED(SimConnect_CallDispatch(hSimConnect, MyDispatchProcRD, NULL)))
+        SimConnect_CallDispatch(hSimConnect, MyDispatchProcRD, &updated);
+        if (updated)
         {
             // Update widgets
             o2->color(glb.ap != 0.0 ? FL_GREEN : FL_RED);
@@ -310,6 +303,7 @@ int main(int argc, char** argv)
             o9->redraw();
             o20->redraw();
             o12->redraw();
+            updated = false;
         }
     }
 }
