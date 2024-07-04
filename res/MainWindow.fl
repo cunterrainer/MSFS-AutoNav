@@ -1,0 +1,71 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0400
+header_name {.h}
+code_name {.cxx}
+class AppNavUI {open
+} {
+  Function {AppNavUI()} {open
+  } {
+    Fl_Window {} {
+      label {Auto Nav} open selected
+      xywh {-784 223 600 420} type Double hide resizable
+    } {
+      Fl_Button {} {
+        label Connect
+        xywh {10 20 120 22}
+      }
+      Fl_Button {} {
+        label Autopilot
+        xywh {10 50 120 22}
+      }
+      Fl_Value_Output {} {
+        label Airspeed
+        xywh {10 80 122 22} align 8 maximum 100000
+      }
+      Fl_Button {} {
+        label {Airspeed hold}
+        xywh {10 110 120 22}
+      }
+      Fl_Button {} {
+        label {Altitude locked}
+        xywh {10 140 120 22}
+      }
+      Fl_Counter {} {
+        label Altitude
+        xywh {10 170 122 22} align 8 minimum 0 step 100
+      }
+      Fl_Button {} {
+        label {Test position}
+        xywh {375 20 100 22}
+      }
+      Fl_Output {} {
+        label {Altitude manually adjustable}
+        xywh {10 200 122 22} align 8
+      }
+      Fl_Output {} {
+        label {Approach captured}
+        xywh {10 230 122 22} align 8
+      }
+      Fl_Button {} {
+        label {Flight Director}
+        xywh {10 260 122 22}
+      }
+      Fl_Counter {} {
+        label Heading
+        xywh {10 290 122 22} align 8 minimum 0 maximum 361 step 1 value 360
+      }
+      Fl_Output {} {
+        label {Heading adjustable}
+        xywh {10 320 122 22} align 8
+      }
+      Fl_Button {} {
+        label {Vertical speed hold}
+        xywh {10 350 122 22}
+      }
+      Fl_Counter {} {
+        label {Vertical speed}
+        xywh {10 380 122 22} align 8 minimum -15000 maximum 15000 step 100
+      }
+    }
+  }
+}

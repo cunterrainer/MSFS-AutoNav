@@ -35,7 +35,7 @@ project "AutoNav"
     language "C++"
     cppdialect "C++17"
     characterset "Unicode"
-    flags "FatalCompileWarnings"
+    --flags "FatalCompileWarnings"
     defines "_CRT_SECURE_NO_WARNINGS"
 
     files {
@@ -45,6 +45,8 @@ project "AutoNav"
 
     includedirs {
         "src",
+        "Dependencies/fltk",
+        "Dependencies/fltk/Build",
         "Dependencies/GLFW/include",
         "Dependencies/ImGui/include",
         "Dependencies/tinyfiledialogs/include",
@@ -52,6 +54,8 @@ project "AutoNav"
     }
 
     externalincludedirs {
+        "Dependencies/fltk",
+        "Dependencies/fltk/Build",
         "Dependencies/ImGui/include",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
@@ -62,6 +66,8 @@ project "AutoNav"
         "tinyfiledialogs",
         
         -- windows
+        "Gdiplus",
+        "comctl32",
         "gdi32",
         "opengl32",
         "shell32",
@@ -75,7 +81,6 @@ project "AutoNav"
         "Ws2_32",
         "kernel32",
         "winspool",
-        "comdlg32",
         "advapi32",
         "oleaut32",
         "odbc32",
@@ -83,7 +88,7 @@ project "AutoNav"
     }
 
     libdirs {
-        "$(MSFS_SDK)\\SimConnect SDK\\lib\\static"
+        "$(MSFS_SDK)\\SimConnect SDK\\lib\\static",
     }
 
 
@@ -155,7 +160,16 @@ project "AutoNav"
 
     filter { "configurations:Debug" }
         kind "ConsoleApp"
-        links "SimConnect_debug"
+        links {
+            "SimConnect_debug",
+            "fltk_formsd",
+            "fltk_imagesd",
+            "fltk_jpegd",
+            "fltk_pngd",
+            "fltk_zd",
+            "fltkd"
+        }
+        libdirs "Dependencies/fltk/Build/lib/Debug"
     filter { "configurations:Release" }
         kind "WindowedApp"
         links "SimConnect"

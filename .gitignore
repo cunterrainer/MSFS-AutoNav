@@ -3,6 +3,7 @@
 .vscode/
 
 BIN/
+Dependencies/fltk/Build
 
 Makefile
 *.make
