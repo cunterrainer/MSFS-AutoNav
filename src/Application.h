@@ -115,7 +115,7 @@ public:
         m_AirspeedValCounter.lstep(10);
         m_AirspeedValCounter.align(Fl_Align(FL_ALIGN_RIGHT));
 
-        m_AltitudeCounter.minimum(0);
+        m_AltitudeCounter.minimum(-3000);
         m_AltitudeCounter.step(100);
         m_AltitudeCounter.lstep(1000);
         m_AltitudeCounter.align(Fl_Align(FL_ALIGN_RIGHT));
