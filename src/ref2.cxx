@@ -1,4 +1,5 @@
 #include <cstring>
+#include <memory>
 
 #include <Windows.h>
 #include <strsafe.h>
@@ -13,6 +14,7 @@
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Value_Output.H>
 
+#include "Application.h"
 
 struct Struct1
 {
@@ -234,9 +236,12 @@ void OnAutopilot(Fl_Widget* w, void*)
 
 int main(int argc, char** argv)
 {
+    Application* app = new Application();
+    return 0;
     Fl_Double_Window* window = new Fl_Double_Window(600, 420, "Auto Nav");
 
-    Fl_Button* o1 = new Fl_Button(10, 20, 120, 22, "Connect");
+    std::unique_ptr<Fl_Button> o1 = std::make_unique<Fl_Button>(10, 20, 120, 22, "Connect");
+    //Fl_Button* o1 = new Fl_Button(10, 20, 120, 22, "Connect");
     o1->callback(OnConnect, nullptr);
     o1->color(FL_RED);
 
