@@ -81,6 +81,12 @@ private:
         app->AutoPilot();
     }
 
+    static inline void OnAltHold(Fl_Widget* w, void* a)
+    {
+        Application* app = (Application*)a;
+        app->AltHold();
+    }
+
     static inline void OnSetPosition(Fl_Widget* w, void* a)
     {
         Application* app = (Application*)a;
@@ -115,6 +121,7 @@ public:
         m_AirspeedValCounter.lstep(10);
         m_AirspeedValCounter.align(Fl_Align(FL_ALIGN_RIGHT));
 
+        m_AltitudeLockBtn.callback(OnAltHold, this);
         m_AltitudeCounter.minimum(-3000);
         m_AltitudeCounter.step(100);
         m_AltitudeCounter.lstep(1000);
@@ -163,6 +170,7 @@ public:
         {
             m_ConnectBtn.color(FL_GREEN);
             m_ConnectBtn.label("Disconnect");
+            Refresh();
         }
         else
         {
@@ -184,7 +192,15 @@ public:
 
     void AutoPilot() const noexcept
     {
-        m_Socket.TransmitEvent();
+        m_Socket.TransmitEvent(EVENT_AUTOPILOT);
+        Refresh();
+    }
+
+
+    void AltHold() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_ALT_LOCK);
+        Refresh();
     }
 
 
@@ -205,8 +221,9 @@ public:
 
     inline void Show() noexcept
     {
-        while (Fl::wait())
+        while (Fl::check())
         {
+            Fl::wait(1);
             m_Socket.Dispatch(&m_Info);
             UpdateUI();
         }

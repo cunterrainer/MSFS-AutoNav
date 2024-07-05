@@ -18,7 +18,8 @@ enum INPUT_ID {
 enum EVENT_ID {
     EVENT_SIM_START,
     EVENT_6,
-    EVENT_BRAKES,
+    EVENT_AUTOPILOT,
+    EVENT_ALT_LOCK,
 };
 
 enum DATA_DEFINE_ID {
@@ -94,12 +95,14 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT VERTICAL HOLD VAR", "feet/minute");
 
 
-        hr = SimConnect_MapClientEventToSimEvent(m_SimConnectHandle, EVENT_BRAKES, "PARKING_BRAKES");
-        hr = SimConnect_AddClientEventToNotificationGroup(m_SimConnectHandle, GROUP0, EVENT_BRAKES);
+        hr = SimConnect_MapClientEventToSimEvent(m_SimConnectHandle, EVENT_AUTOPILOT, "AP_MASTER");
+        hr = SimConnect_MapClientEventToSimEvent(m_SimConnectHandle, EVENT_ALT_LOCK, "AP_ALT_HOLD");
+        hr = SimConnect_AddClientEventToNotificationGroup(m_SimConnectHandle, GROUP0, EVENT_AUTOPILOT);
+        hr = SimConnect_AddClientEventToNotificationGroup(m_SimConnectHandle, GROUP0, EVENT_ALT_LOCK);
         hr = SimConnect_SetNotificationGroupPriority(m_SimConnectHandle, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
-
-        hr = SimConnect_MapInputEventToClientEvent(m_SimConnectHandle, INPUT0, "z", EVENT_BRAKES);
-        hr = SimConnect_SetInputGroupState(m_SimConnectHandle, INPUT0, SIMCONNECT_STATE_ON);
+        //
+        //hr = SimConnect_MapInputEventToClientEvent(m_SimConnectHandle, INPUT0, "z", EVENT_BRAKES);
+        //hr = SimConnect_SetInputGroupState(m_SimConnectHandle, INPUT0, SIMCONNECT_STATE_ON);
         m_Connected = true;
         return true;
     }
@@ -133,10 +136,9 @@ public:
     }
 
 
-    void TransmitEvent() const noexcept
+    void TransmitEvent(EVENT_ID event) const noexcept
     {
-
-        SimConnect_TransmitClientEvent(m_SimConnectHandle, SIMCONNECT_OBJECT_ID_USER, EVENT_BRAKES, 0, GROUP0, 0);
+        SimConnect_TransmitClientEvent(m_SimConnectHandle, SIMCONNECT_OBJECT_ID_USER, event, 0, GROUP0, 0);
     }
 
 
