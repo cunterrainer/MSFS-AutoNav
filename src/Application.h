@@ -225,6 +225,10 @@ public:
         {
             Fl::wait(1);
             m_Socket.Dispatch(&m_Info);
+            if (m_Info.quit)
+            {
+                Connect();
+            }
             UpdateUI();
         }
     }

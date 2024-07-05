@@ -54,6 +54,7 @@ struct Struct1
     double ap_vertical_hold;
     double ap_vertical_speed;
     bool updated = false;
+    bool quit = false;
 };
 
 
@@ -223,7 +224,9 @@ public:
         // TODO make quit when sim exits
         case SIMCONNECT_RECV_ID_QUIT:
         {
-            //    quit = 1;
+            Struct1* tmp = (Struct1*)strct;
+            tmp->quit = true;
+            puts("Quit");
             break;
         }
 
