@@ -40,18 +40,20 @@ struct Struct1
 HANDLE  hSimConnect = NULL;
 Struct1 glb;
 
-
 enum GROUP_ID {
     GROUP_6,
+    GROUP0,
 };
 
 enum INPUT_ID {
     INPUT_6,
+    INPUT0,
 };
 
 enum EVENT_ID {
     EVENT_SIM_START,
-    EVENT_6
+    EVENT_6,
+    EVENT_BRAKES,
 };
 
 enum DATA_DEFINE_ID {
@@ -161,7 +163,7 @@ void OnConnect(Fl_Widget* w, void*)
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "Plane Altitude", "feet");
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "Plane Latitude", "degrees");
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "Plane Longitude", "degrees");
-
+        
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "AUTOPILOT MASTER", NULL);
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD VAR", "knots");
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD", NULL);
@@ -175,15 +177,21 @@ void OnConnect(Fl_Widget* w, void*)
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "AUTOPILOT HEADING MANUALLY TUNABLE", NULL);
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "AUTOPILOT VERTICAL HOLD", NULL);
         hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_1, "AUTOPILOT VERTICAL HOLD VAR", "feet/minute");
-
-        hr = SimConnect_SubscribeToSystemEvent(hSimConnect, EVENT_SIM_START, "unpaused");
+        
+        
+        hr = SimConnect_MapClientEventToSimEvent(hSimConnect, EVENT_BRAKES, "PARKING_BRAKES");
+        hr = SimConnect_AddClientEventToNotificationGroup(hSimConnect, GROUP0, EVENT_BRAKES);
+        hr = SimConnect_SetNotificationGroupPriority(hSimConnect, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
+        
+        hr = SimConnect_MapInputEventToClientEvent(hSimConnect, INPUT0, "z", EVENT_BRAKES);
+        hr = SimConnect_SetInputGroupState(hSimConnect, INPUT0, SIMCONNECT_STATE_ON);
 
         w->label("Disconnect");
         w->color(FL_GREEN);
     }
     else
     {
-        if (FAILED(SimConnect_Close(&hSimConnect))) // TODO: Disconnect on app close
+        if (FAILED(SimConnect_Close(hSimConnect))) // TODO: Disconnect on app close
         {
             return Fl::error("Failed to disconnect from flight simulator");
         }
@@ -218,6 +226,12 @@ void OnRefresh(Fl_Widget* w, void*)
 }
 
 
+void OnAutopilot(Fl_Widget* w, void*)
+{
+    SimConnect_TransmitClientEvent(hSimConnect, SIMCONNECT_OBJECT_ID_USER, EVENT_BRAKES, 0, GROUP0, 0);
+}
+
+
 int main(int argc, char** argv)
 {
     Fl_Double_Window* window = new Fl_Double_Window(600, 420, "Auto Nav");
@@ -231,6 +245,7 @@ int main(int argc, char** argv)
     Fl_Button* o4 = new Fl_Button(10, 110, 120, 22, "Airspeed hold");
     o3->align(Fl_Align(FL_ALIGN_RIGHT));
     o3->maximum(100000);
+    o2->callback(OnAutopilot, nullptr);
 
     Fl_Button*  o5 = new Fl_Button(10, 140, 120, 22, "Altitude locked");
     Fl_Counter* o6 = new Fl_Counter(10, 170, 122, 22, "Altitude");
