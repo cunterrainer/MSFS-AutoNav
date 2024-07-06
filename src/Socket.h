@@ -95,6 +95,7 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT VERTICAL HOLD", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT VERTICAL HOLD VAR", "feet/minute");
 
+
         hr = SimConnect_SubscribeToSystemEvent(m_SimConnectHandle, EVENT_SIM_START, "SimStart");
         hr = SimConnect_MapClientEventToSimEvent(m_SimConnectHandle, EVENT_AUTOPILOT, "AP_MASTER");
         hr = SimConnect_MapClientEventToSimEvent(m_SimConnectHandle, EVENT_ALT_LOCK, "AP_ALT_HOLD");
@@ -169,7 +170,9 @@ public:
                     // Now the sim is running, request information on the user aircraft
                     hr = SimConnect_RequestDataOnSimObjectType(m_SimConnectHandle, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER);
                     break;
-
+                case EVENT_AUTOPILOT:
+                    hr = SimConnect_RequestDataOnSimObjectType(m_SimConnectHandle, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER);
+                    break;
                 default:
                     break;
                 }
