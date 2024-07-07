@@ -213,49 +213,43 @@ public:
     }
 
 
-    inline void ToggleAutopilot() noexcept
+    inline void ToggleAutopilot() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_AUTOPILOT);
-        Refresh();
     }
 
 
-    inline void ToggleAltHold() noexcept
+    inline void ToggleAltHold() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_ALTITUDE_HOLD);
-        Refresh();
     }
 
 
-    inline void ToggleAirspeedHold() noexcept
+    inline void ToggleAirspeedHold() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_AIRSPEED_HOLD);
-        Refresh();
     }
 
 
-    inline void ToggleFlightDirector() noexcept
+    inline void ToggleFlightDirector() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_FLIGHT_DIRECTOR);
-        Refresh();
     }
 
 
-    inline void ToggleHeadingLocked() noexcept
+    inline void ToggleHeadingLocked() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_HEADING_LOCKED);
-        Refresh();
     }
 
 
-    inline void ToggleVerticalSpeedHold() noexcept
+    inline void ToggleVerticalSpeedHold() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_VERTICAL_SPEED_HOLD);
-        Refresh();
     }
 
 
-    void SetPosition()
+    void SetPosition() const noexcept
     {
         SIMCONNECT_DATA_INITPOSITION Init;
         Init.Altitude = 5000.0;
