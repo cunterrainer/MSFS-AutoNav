@@ -89,10 +89,16 @@ private:
         app->SetHeading();
     }
 
-    static inline void OnAltitudeCounterChanged(Fl_Widget* w, void* a)
+    static inline void OnAltitudeCounterChanged(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
         app->SetAltitude();
+    }
+
+    static inline void OnVerticalSpeedChanged(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->SetVerticalSpeed();
     }
 
     static inline void OnSetPositionClicked(Fl_Widget*, void* a)
@@ -203,6 +209,7 @@ public:
         m_VerticalSpeedCounter.range(-15000, 15000);
         m_VerticalSpeedCounter.step(100);
         m_VerticalSpeedCounter.lstep(1000);
+        m_VerticalSpeedCounter.callback(OnVerticalSpeedChanged, this);
         m_FlightDirectorBtn.callback(OnFlightDirectorClicked, this);
         m_VerticalSpeedHoldBtn.callback(OnVerticalSpeedHoldClicked, this);
 
@@ -303,6 +310,12 @@ public:
     inline void SetAltitude() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_SET_ALTITUDE, static_cast<DWORD>(m_AltitudeCounter.value()));
+    }
+
+
+    inline void SetVerticalSpeed() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_SET_VERTICAL_SPEED, static_cast<DWORD>(m_VerticalSpeedCounter.value()));
     }
 
 
