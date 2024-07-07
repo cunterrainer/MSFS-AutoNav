@@ -205,9 +205,17 @@ public:
             case EVENT_ALTITUDE_HOLD:
             case EVENT_AIRSPEED_HOLD:
             case EVENT_APPROACH_HOLD:
+            case EVENT_FLC_HOLD:
             case EVENT_FLIGHT_DIRECTOR:
+            case EVENT_NAV_LOCKED:
             case EVENT_HEADING_LOCKED:
             case EVENT_VERTICAL_SPEED_HOLD:
+            case EVENT_WING_LVL_HOLD:
+            case EVENT_YAW_DAMPER_HOLD:
+            case EVENT_SET_ALTITUDE:
+            case EVENT_SET_AIRSPEED:
+            case EVENT_SET_HEADING:
+            case EVENT_SET_VERTICAL_SPEED:
                 ShouldUpdate = true;
                 break;
             default:
