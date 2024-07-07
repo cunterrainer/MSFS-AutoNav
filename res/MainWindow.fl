@@ -6,78 +6,201 @@ class AppNavUI {open
 } {
   Function {AppNavUI()} {open
   } {
+    comment {my comment} {in_source in_header
+    }
     Fl_Window {} {
-      label {Auto Nav} open
-      xywh {703 224 600 480} type Double hide resizable
+      label {Auto Nav} open selected
+      xywh {496 312 598 517} type Double hide resizable
     } {
       Fl_Output {} {
         label AirplaneTitle
-        xywh {10 10 122 22} box FLAT_BOX color 49 labeltype NO_LABEL
+        xywh {0 10 600 22} box FLAT_BOX color 49 labeltype NO_LABEL align 0
       }
       Fl_Button {} {
         label Connect
-        xywh {10 40 122 22}
+        xywh {128 40 150 35}
       }
       Fl_Button {} {
         label Autopilot
-        xywh {10 70 122 22}
+        xywh {325 40 150 35}
       }
       Fl_Counter {} {
         label Airspeed
-        xywh {10 100 122 22} align 8 minimum 0 step 1
+        xywh {132 250 122 22} align 8 minimum 0 step 1
       }
       Fl_Button {} {
         label {Airspeed hold}
-        xywh {10 130 122 22}
+        xywh {325 250 122 22}
+      }
+      Fl_Button {} {
+        label {Auto throttle}
+        xywh {132 288 122 22}
       }
       Fl_Button {} {
         label {Altitude locked}
-        xywh {10 160 122 22}
+        xywh {132 78 122 22}
       }
       Fl_Counter {} {
         label Altitude
-        xywh {10 190 122 22} align 8 minimum 0 step 100
+        xywh {132 114 122 22} align 8 minimum 0 step 100
       }
       Fl_Button {} {
         label {Test position}
-        xywh {375 20 122 22}
+        xywh {309 487 122 22}
       }
       Fl_Button {} {
         label {Refresh @refresh}
-        xywh {375 50 122 22}
+        xywh {461 487 122 22}
       }
       Fl_Output {} {
         label {Altitude manually adjustable}
-        xywh {10 220 122 22} align 8
+        xywh {132 152 122 22} align 8
       }
-      Fl_Output {} {
-        label {Approach captured}
-        xywh {10 250 122 22} align 8
+      Fl_Button {} {
+        label Approach
+        xywh {325 330 122 22}
+      }
+      Fl_Button {} {
+        label FLC
+        xywh {325 148 122 22}
       }
       Fl_Button {} {
         label {Flight Director}
-        xywh {10 280 122 22}
+        xywh {325 293 122 22}
+      }
+      Fl_Button {} {
+        label NAV
+        xywh {132 330 122 22}
+      }
+      Fl_Button {} {
+        label {Wing LVL}
+        xywh {325 368 122 22}
+      }
+      Fl_Button {} {
+        label {Yaw Damper}
+        xywh {132 368 122 22}
       }
       Fl_Button {} {
         label {Heading locked}
-        xywh {10 310 122 22}
+        xywh {132 183 122 22}
       }
       Fl_Counter {} {
-        label Heading selected
-        xywh {10 340 122 22} align 8 minimum -1 maximum 360 step 1 value 360
+        label Heading
+        xywh {132 213 122 22} align 8 minimum -1 maximum 360 step 1 value 360
       }
       Fl_Output {} {
         label {Heading adjustable}
-        xywh {10 370 122 22} align 8
+        xywh {325 212 122 22} align 8
       }
       Fl_Button {} {
-        label {Vertical speed hold}
-        xywh {10 400 122 22}
+        label {Vertical speed}
+        xywh {325 78 122 22}
       }
       Fl_Counter {} {
         label {Vertical speed}
-        xywh {10 430 122 22} align 8 minimum -15000 maximum 15000 step 100
+        xywh {325 114 122 22} align 8 minimum -15000 maximum 15000 step 100
       }
+      Fl_Choice {} {
+        label {Heading Index} open
+        xywh {325 182 92 22} down_box BORDER_BOX align 8
+      } {}
+    }
+    Fl_Window {} {
+      label {Auto Nav} open
+      xywh {506 322 600 520} type Double resizable visible
+    } {
+      Fl_Output {} {
+        label AirplaneTitle
+        xywh {0 10 600 22} box FLAT_BOX color 49 labeltype NO_LABEL align 0
+      }
+      Fl_Button {} {
+        label Connect
+        xywh {20 58 115 70}
+      }
+      Fl_Button {} {
+        label AP
+        xywh {168 58 115 70}
+      }
+      Fl_Counter {} {
+        label Airspeed
+        xywh {17 164 120 25} align 1 minimum 0 step 1
+      }
+      Fl_Button {} {
+        label {Airspeed hold}
+        xywh {20 211 115 30}
+      }
+      Fl_Button {} {
+        label {Auto throttle}
+        xywh {20 251 115 30}
+      }
+      Fl_Button {} {
+        label ALT
+        xywh {316 211 115 70}
+      }
+      Fl_Counter {} {
+        label Altitude
+        xywh {311 164 120 25} align 1 minimum 0 step 100
+      }
+      Fl_Button {} {
+        label {Test position}
+        xywh {309 487 122 22}
+      }
+      Fl_Button {} {
+        label {Refresh @refresh}
+        xywh {461 487 122 22}
+      }
+      Fl_Output {} {
+        label {Altitude manually adjustable}
+        xywh {15 480 122 22} align 8
+      }
+      Fl_Button {} {
+        label Approach
+        xywh {316 301 115 70}
+      }
+      Fl_Button {} {
+        label FLC
+        xywh {465 58 115 70}
+      }
+      Fl_Button {} {
+        label {Flight Director}
+        xywh {316 58 115 70}
+      }
+      Fl_Button {} {
+        label NAV
+        xywh {170 301 115 70}
+      }
+      Fl_Button {} {
+        label {Wing LVL}
+        xywh {465 301 115 70}
+      }
+      Fl_Button {} {
+        label {Yaw Damper}
+        xywh {22 301 115 70}
+      }
+      Fl_Button {} {
+        label {Heading locked}
+        xywh {168 251 115 30}
+      }
+      Fl_Counter {} {
+        label Heading
+        xywh {165 164 120 25} align 1 minimum -1 maximum 360 step 1 value 360
+      }
+      Fl_Output {} {
+        label {Heading adjustable}
+        xywh {46 397 122 22} align 8
+      }
+      Fl_Button {} {
+        label VS
+        xywh {465 211 115 70}
+      }
+      Fl_Counter {} {
+        label {Vertical speed}
+        xywh {463 164 120 25} align 1 minimum 0 maximum 0 step 100
+      }
+      Fl_Choice {} {
+        label {Heading Index} open
+        xywh {168 217 115 22} down_box BORDER_BOX align 1
+      } {}
     }
   }
 }

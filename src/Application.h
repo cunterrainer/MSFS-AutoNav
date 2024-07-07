@@ -14,31 +14,31 @@
 class Application
 {
 private:
-    Fl_Double_Window m_Window;
+    Fl_Double_Window m_Window = Fl_Double_Window(600, 520, "Auto Nav");
 
-    Fl_Output  m_AirplaneTitleOut;
-    Fl_Button  m_ConnectBtn;
-    Fl_Button  m_AutopilotBtn;
-    Fl_Counter m_AirspeedValCounter;
-    Fl_Button  m_AirspeedHoldBtn;
-    Fl_Button  m_AutoThrottleBtn;
-    Fl_Button  m_AltitudeLockBtn;
-    Fl_Counter m_AltitudeCounter;
-    Fl_Output  m_AltitudeManAdjOut;
-    Fl_Button  m_ApproachHoldBtn;
-    Fl_Button  m_FLCBtn;
-    Fl_Button  m_FlightDirectorBtn;
-    Fl_Button  m_NavLockedBtn;
-    Fl_Button  m_HeadingLockedBtn;
-    Fl_Counter m_HeadingCounter;
-    Fl_Output  m_HeadingManAdjOut;
-    Fl_Button  m_VerticalSpeedHoldBtn;
-    Fl_Counter m_VerticalSpeedCounter;
-    Fl_Button  m_TestPositionBtn;
-    Fl_Button  m_RefreshBtn;
-    Fl_Button  m_WingLvlBtn;
-    Fl_Button  m_YawDamperBtn;
-    Fl_Choice  m_HeadingIdxChoice;
+    Fl_Output  m_AirplaneTitleOut     = Fl_Output (  0,  10, 600, 22, "AirplaneTitle");
+    Fl_Button  m_ConnectBtn           = Fl_Button ( 20,  58, 115, 70, "Connect");
+    Fl_Button  m_AutopilotBtn         = Fl_Button (168,  58, 115, 70, "AP");
+    Fl_Counter m_AirspeedValCounter   = Fl_Counter(20, 164, 115, 25, "Airspeed");
+    Fl_Button  m_AirspeedHoldBtn      = Fl_Button (20, 211, 115, 30, "SPD");
+    Fl_Button  m_AutoThrottleBtn      = Fl_Button (20, 251, 115, 30, "A/THR");
+    Fl_Button  m_AltitudeLockBtn      = Fl_Button (316, 211, 115, 70, "ALT");
+    Fl_Counter m_AltitudeCounter      = Fl_Counter(316, 164, 115, 25, "Altitude");
+    Fl_Output  m_AltitudeManAdjOut    = Fl_Output (15, 480, 122, 22, "Altitude manually adjustable");
+    Fl_Button  m_ApproachHoldBtn      = Fl_Button (316, 301, 115, 70, "APPR");
+    Fl_Button  m_FLCBtn               = Fl_Button (465,  58, 115, 70, "FLC");
+    Fl_Button  m_FlightDirectorBtn    = Fl_Button (316,  58, 115, 70, "FD");
+    Fl_Button  m_NavLockedBtn         = Fl_Button (170, 301, 115, 70, "NAV");
+    Fl_Button  m_HeadingLockedBtn     = Fl_Button (168, 251, 115, 30, "HDG");
+    Fl_Counter m_HeadingCounter       = Fl_Counter(168, 164, 115, 25, "Heading");
+    Fl_Output  m_HeadingManAdjOut     = Fl_Output (46, 397, 122, 22, "Heading adjustable");
+    Fl_Button  m_VerticalSpeedHoldBtn = Fl_Button (465, 211, 115, 70, "V/S");
+    Fl_Counter m_VerticalSpeedCounter = Fl_Counter(465, 164, 115, 25, "Vertical speed");
+    Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
+    Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
+    Fl_Button  m_WingLvlBtn           = Fl_Button (465, 301, 115, 70, "Wing LVL");
+    Fl_Button  m_YawDamperBtn         = Fl_Button (22, 301, 115, 70, "Yaw Damper");
+    Fl_Choice  m_HeadingSlotChoice    = Fl_Choice (168, 217, 115, 22, "Heading index");
 
     Socket m_Socket;
     Struct1 m_Info;
@@ -67,7 +67,7 @@ private:
         m_VerticalSpeedCounter.value(m_Info.ap_vertical_speed);
         m_WingLvlBtn.color(m_Info.ap_wing_lvl != 0.0 ? FL_GREEN : FL_RED);
         m_YawDamperBtn.color(m_Info.ap_yaw_damper != 0.0 ? FL_GREEN : FL_RED);
-        m_HeadingIdxChoice.value((int)m_Info.ap_heading_idx - 1);
+        m_HeadingSlotChoice.value((int)m_Info.ap_heading_idx - 1);
 
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
@@ -96,7 +96,7 @@ private:
         m_Info.ap_vertical_speed = 0;
         m_Info.ap_alt_manually_adjustable = 0;
         m_Info.ap_heading_manually_adjustable = 0;
-        m_HeadingIdxChoice.value(-1);
+        m_HeadingSlotChoice.value(-1);
 
         m_AutopilotBtn.color(FL_BACKGROUND_COLOR);
         m_AirspeedHoldBtn.color(FL_BACKGROUND_COLOR);
@@ -266,31 +266,7 @@ private:
         app->SetHeadingIndex();
     }
 public:
-    Application() :
-        m_Window(670, 650, "Auto Nav"),
-        m_AirplaneTitleOut(10, 10, 500, 22, "AirplaneTitle"),
-        m_ConnectBtn(10, 40, 120, 22, "Connect"),
-        m_AutopilotBtn(10, 70, 120, 22, "Autopilot"),
-        m_AirspeedValCounter(10, 100, 122, 22, "Airspeed"),
-        m_AirspeedHoldBtn(10, 130, 120, 22, "Airspeed hold"),
-        m_AutoThrottleBtn(10, 160, 120, 22, "Auto throttle"),
-        m_AltitudeLockBtn(10, 190, 120, 22, "Altitude locked"),
-        m_AltitudeCounter(10, 220, 122, 22, "Altitude"),
-        m_AltitudeManAdjOut(10, 250, 122, 22, "Altitude manually adjustable"),
-        m_ApproachHoldBtn(10, 280, 122, 22, "Approach hold"),
-        m_FLCBtn(10, 310, 122, 22, "FLC"),
-        m_FlightDirectorBtn(10, 340, 122, 22, "Flight Director"),
-        m_NavLockedBtn(10, 370, 122, 22, "Nav"),
-        m_HeadingLockedBtn(10, 400, 122, 22, "Heading locked"),
-        m_HeadingCounter(10, 430, 122, 22, "Heading"),
-        m_HeadingManAdjOut(10, 460, 122, 22, "Heading adjustable"),
-        m_VerticalSpeedHoldBtn(10, 490, 122, 22, "Vertical speed hold"),
-        m_VerticalSpeedCounter(10, 520, 122, 22, "Vertical speed"),
-        m_TestPositionBtn(375, 40, 100, 22, "Test position"),
-        m_RefreshBtn(375, 70, 100, 22, "Refresh @refresh"),
-        m_WingLvlBtn(10, 550, 122, 22, "Wing Level"),
-        m_YawDamperBtn(10, 580, 122, 22, "Yaw Damper"),
-        m_HeadingIdxChoice(10, 610, 122, 22, "Heading index")
+    Application()
     {
         Fl_RGB_Image i(sg_Icon_Data, sg_Icon_Width, sg_Icon_Height, sg_Icon_Channel, 0);
         m_Window.icon(&i);
@@ -307,7 +283,7 @@ public:
         m_AirspeedValCounter.minimum(0);
         m_AirspeedValCounter.step(1);
         m_AirspeedValCounter.lstep(10);
-        m_AirspeedValCounter.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_AirspeedValCounter.align(Fl_Align(FL_ALIGN_TOP));
         m_AirspeedValCounter.callback(OnAirSpeedChanged, this);
         m_AirspeedHoldBtn.callback(OnAirspeedHoldClicked, this);
         m_AutoThrottleBtn.callback(OnAutoThrottleClicked, this);
@@ -316,7 +292,7 @@ public:
         m_AltitudeCounter.minimum(-3000);
         m_AltitudeCounter.step(100);
         m_AltitudeCounter.lstep(1000);
-        m_AltitudeCounter.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_AltitudeCounter.align(Fl_Align(FL_ALIGN_TOP));
         m_AltitudeCounter.callback(OnAltitudeCounterChanged, this);
 
         m_AltitudeManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
@@ -327,14 +303,13 @@ public:
         m_HeadingCounter.step(1);
         m_HeadingCounter.lstep(10);
         m_HeadingCounter.value(0);
-        m_HeadingCounter.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_HeadingCounter.align(Fl_Align(FL_ALIGN_TOP));
         m_HeadingCounter.callback(OnHeadingCounterChanged, this);
         m_HeadingManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
         m_HeadingManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
         m_HeadingLockedBtn.callback(OnHeadingLockedClicked, this);
 
-        m_VerticalSpeedCounter.align(Fl_Align(FL_ALIGN_RIGHT));
-        m_VerticalSpeedCounter.range(-15000, 15000);
+        m_VerticalSpeedCounter.align(Fl_Align(FL_ALIGN_TOP));
         m_VerticalSpeedCounter.step(100);
         m_VerticalSpeedCounter.lstep(1000);
         m_VerticalSpeedCounter.callback(OnVerticalSpeedChanged, this);
@@ -347,11 +322,11 @@ public:
         m_WingLvlBtn.callback(OnWingLvlClicked, this);
         m_YawDamperBtn.callback(OnYawDamperClicked, this);
 
-        m_HeadingIdxChoice.add("1");
-        m_HeadingIdxChoice.add("2");
-        m_HeadingIdxChoice.add("3");
-        m_HeadingIdxChoice.align(Fl_Align(FL_ALIGN_RIGHT));
-        m_HeadingIdxChoice.callback(OnHeadingIdxChosen, this);
+        m_HeadingSlotChoice.add("1");
+        m_HeadingSlotChoice.add("2");
+        m_HeadingSlotChoice.add("3");
+        m_HeadingSlotChoice.align(Fl_Align(FL_ALIGN_TOP));
+        m_HeadingSlotChoice.callback(OnHeadingIdxChosen, this);
 
         m_RefreshBtn.callback(OnRefreshClicked, this);
         m_TestPositionBtn.callback(OnSetPositionClicked, this);
@@ -490,7 +465,7 @@ public:
 
     inline void SetHeadingIndex() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_SET_HEADING_IDX, static_cast<DWORD>(m_HeadingIdxChoice.value() + 1));
+        m_Socket.TransmitEvent(EVENT_SET_HEADING_IDX, static_cast<DWORD>(m_HeadingSlotChoice.value() + 1));
     }
 
 
