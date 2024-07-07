@@ -75,6 +75,57 @@ private:
         m_YawDamperBtn.redraw();
         m_Info.updated = false;
     }
+
+
+    void ResetColors()
+    {
+        m_Info.title[0] = '\0';
+        m_AirplaneTitleOut.value(m_Info.title);
+        m_Info.ap_airspeed = 0;
+        m_Info.ap_alt_lock_var = 0;
+        m_Info.ap_heading_lock_dir = 0;
+        m_Info.ap_vertical_speed = 0;
+        m_Info.ap_alt_manually_adjustable = 0;
+        m_Info.ap_heading_manually_adjustable = 0;
+
+        m_AutopilotBtn.color(FL_BACKGROUND_COLOR);
+        m_AirspeedHoldBtn.color(FL_BACKGROUND_COLOR);
+        m_AltitudeLockBtn.color(FL_BACKGROUND_COLOR);
+        M_ApproachHoldBtn.color(FL_BACKGROUND_COLOR);
+        m_FLCBtn.color(FL_BACKGROUND_COLOR);
+        m_FlightDirectorBtn.color(FL_BACKGROUND_COLOR);
+        m_NavLockedBtn.color(FL_BACKGROUND_COLOR);
+        m_HeadingLockedBtn.color(FL_BACKGROUND_COLOR);
+        m_VerticalSpeedHoldBtn.color(FL_BACKGROUND_COLOR);
+        m_TestPositionBtn.color(FL_BACKGROUND_COLOR);
+        m_RefreshBtn.color(FL_BACKGROUND_COLOR);
+        m_WingLvlBtn.color(FL_BACKGROUND_COLOR);
+        m_YawDamperBtn.color(FL_BACKGROUND_COLOR);
+
+
+        m_AirspeedValCounter.value(m_Info.ap_airspeed);
+        m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
+        m_VerticalSpeedCounter.value(m_Info.ap_vertical_speed);
+        m_HeadingCounter.value(m_Info.ap_heading_lock_dir);
+
+
+        m_AltitudeManAdjOut.value("");
+        m_HeadingManAdjOut.value("");
+
+        m_ConnectBtn.redraw();
+        m_AutopilotBtn.redraw();
+        m_AirspeedHoldBtn.redraw();
+        m_AltitudeLockBtn.redraw();
+        M_ApproachHoldBtn.redraw();
+        m_FLCBtn.redraw();
+        m_FlightDirectorBtn.redraw();
+        m_NavLockedBtn.redraw();
+        m_HeadingLockedBtn.redraw();
+        m_VerticalSpeedHoldBtn.redraw();
+        m_RefreshBtn.redraw();
+        m_WingLvlBtn.redraw();
+        m_YawDamperBtn.redraw();
+    }
 private:
     static inline void OnConnectClicked(Fl_Widget*, void* a)
     {
@@ -290,6 +341,7 @@ public:
 
             m_ConnectBtn.color(FL_RED);
             m_ConnectBtn.label("Connect");
+            ResetColors();
             if (m_Info.quit)
             {
                 Fl::error("Quit microsoft flight simulator, lost connection");
