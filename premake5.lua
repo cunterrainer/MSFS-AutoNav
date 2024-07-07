@@ -10,9 +10,7 @@ cwd = os.getcwd() -- get current working directory
 targetdir(cwd .. outputdir .. "bin")
 objdir(cwd .. outputdir .. "bin-int")
 
-filter "system:windows"
-    platforms { "x64", "x86" }
-
+platforms { "x64", "x86" }
 filter { "configurations:Debug" }
     runtime "Debug"
     symbols "on"
@@ -35,12 +33,17 @@ project "AutoNav"
     language "C++"
     cppdialect "C++17"
     characterset "Unicode"
-    --flags "FatalCompileWarnings"
+    flags "FatalCompileWarnings"
+    warnings "High"
+    externalwarnings "Default"
+    buildoptions { "/sdl" }
+    disablewarnings "4706"
     defines "_CRT_SECURE_NO_WARNINGS"
 
     files {
         "src/**.cpp",
-        "src/**.h"
+        "src/**.h",
+        "res/icon.rc"
     }
 
     includedirs {
@@ -81,74 +84,6 @@ project "AutoNav"
     libdirs {
         "$(MSFS_SDK)\\SimConnect SDK\\lib\\static",
     }
-
-
-    --gcc* clang* msc*
-    filter "toolset:msc*"
-        warnings "High"
-        externalwarnings "Default"
-        files "res/icon.rc"
-        buildoptions { "/sdl" }
-        disablewarnings "4706"
-
-    filter { "toolset:gcc* or toolset:clang*" }
-        enablewarnings {
-            --"cast-align",
-            --"cast-qual",
-            --"ctor-dtor-privacy",
-            "disabled-optimization",
-            --"format=2",
-            "init-self",
-            "missing-include-dirs",
-            "overloaded-virtual",
-            "redundant-decls",
-            "shadow",
-            "sign-promo",
-            --"switch-default",
-            --"undef",
-            "uninitialized",
-            "unreachable-code",
-            "unused",
-            "alloca",
-            --"conversion",
-            "deprecated",
-            --"format-security",
-            --"null-dereference",
-            "stack-protector",
-            "vla",
-            "shift-overflow"
-        }
-        disablewarnings { "unknown-warning-option", "format-security", "sequence-point", "invalid-source-encoding" }
-
-    filter "toolset:gcc*"
-        warnings "Extra"
-        externalwarnings "Off"
-        enablewarnings {
-            "noexcept",
-            "strict-null-sentinel",
-            "array-bounds=2",
-            --"duplicated-branches",
-            "duplicated-cond",
-            "logical-op",
-            "arith-conversion",
-            "stringop-overflow=4",
-            "implicit-fallthrough=3",
-            "trampolines"
-        }
-        disablewarnings "cast-function-type"
-
-    filter "toolset:clang*"
-        warnings "Extra"
-        externalwarnings "Everything"
-        linkgroups "off"
-        enablewarnings {
-            "array-bounds",
-            "long-long",
-            --"implicit-fallthrough", 
-        }
-        disablewarnings {"cast-align", "sign-conversion" }
-    filter {}
-
 
     filter { "configurations:Debug" }
         kind "ConsoleApp"
