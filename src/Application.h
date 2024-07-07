@@ -1,11 +1,13 @@
 #pragma once
 #include <FL/Fl.H>
+#include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Counter.H>
 #include <FL/Fl_Value_Output.H>
 #include <FL/Fl_Double_Window.H>
 
+#include "Icon.h"
 #include "Socket.h"
 
 class Application
@@ -260,6 +262,9 @@ public:
         m_WingLvlBtn(10, 520, 122, 22, "Wing Level"),
         m_YawDamperBtn(10, 550, 122, 22, "Yaw Damper")
     {
+        Fl_RGB_Image i(sg_Icon_Data, sg_Icon_Width, sg_Icon_Height, sg_Icon_Channel, 0);
+        m_Window.icon(&i);
+
         m_AirplaneTitleOut.box(FL_FLAT_BOX);
         m_AirplaneTitleOut.color(FL_BACKGROUND_COLOR);
         m_AirplaneTitleOut.labeltype(FL_NO_LABEL);

@@ -87,6 +87,7 @@ project "AutoNav"
     filter "toolset:msc*"
         warnings "High"
         externalwarnings "Default"
+        files "res/icon.rc"
         buildoptions { "/sdl" }
         disablewarnings "4706"
 
