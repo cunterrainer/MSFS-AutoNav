@@ -315,6 +315,11 @@ public:
 
     inline void SetVerticalSpeed() const noexcept
     {
+        if (m_VerticalSpeedHoldBtn.color() == FL_RED)
+        {
+            ToggleVerticalSpeedHold();
+        }
+
         m_Socket.TransmitEvent(EVENT_SET_VERTICAL_SPEED, static_cast<DWORD>(m_VerticalSpeedCounter.value()));
     }
 
