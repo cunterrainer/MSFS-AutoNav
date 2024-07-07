@@ -16,11 +16,15 @@ enum INPUT_ID {
     INPUT0,
 };
 
+
 enum EVENT_ID {
     EVENT_SIM_START,
-    EVENT_6,
     EVENT_AUTOPILOT,
-    EVENT_ALT_LOCK,
+    EVENT_ALTITUDE_HOLD,
+    EVENT_AIRSPEED_HOLD, // AP_AIRSPEED_HOLD
+    EVENT_FLIGHT_DIRECTOR, // TOGGLE_FLIGHT_DIRECTOR
+    EVENT_HEADING_LOCKED, // AP_HDG_HOLD
+    EVENT_VERTICAL_SPEED_HOLD // AP_PANEL_VS_HOLD
 };
 
 enum DATA_DEFINE_ID {
@@ -59,9 +63,6 @@ struct Struct1
 };
 
 
-
-
-
 class Socket
 {
 private:
@@ -73,6 +74,7 @@ private:
         Events::Start();
         if (FAILED(SimConnect_Open(&m_SimConnectHandle, "Auto Nav", NULL, 0, Events::Handles[0], 0)))
         {
+            Events::Stop();
             return false; // TODO add exlpanation code
         }
 
@@ -84,6 +86,7 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Plane Altitude", "feet");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Plane Latitude", "degrees");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Plane Longitude", "degrees");
+
 
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT MASTER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD VAR", "knots");
@@ -99,18 +102,33 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT VERTICAL HOLD", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT VERTICAL HOLD VAR", "feet/minute");
 
+        MapClientEventToSimEvent(GROUP0, EVENT_AUTOPILOT, "AP_MASTER");
+        MapClientEventToSimEvent(GROUP0, EVENT_AIRSPEED_HOLD, "AP_AIRSPEED_HOLD");
+        MapClientEventToSimEvent(GROUP0, EVENT_ALTITUDE_HOLD, "AP_ALT_HOLD");
+        MapClientEventToSimEvent(GROUP0, EVENT_FLIGHT_DIRECTOR, "TOGGLE_FLIGHT_DIRECTOR");
+        MapClientEventToSimEvent(GROUP0, EVENT_HEADING_LOCKED, "AP_HDG_HOLD");
+        MapClientEventToSimEvent(GROUP0, EVENT_VERTICAL_SPEED_HOLD, "AP_VS_HOLD");
 
-        hr = SimConnect_SubscribeToSystemEvent(m_SimConnectHandle, EVENT_SIM_START, "SimStart");
-        hr = SimConnect_MapClientEventToSimEvent(m_SimConnectHandle, EVENT_AUTOPILOT, "AP_MASTER");
-        hr = SimConnect_MapClientEventToSimEvent(m_SimConnectHandle, EVENT_ALT_LOCK, "AP_ALT_HOLD");
-        hr = SimConnect_AddClientEventToNotificationGroup(m_SimConnectHandle, GROUP0, EVENT_AUTOPILOT);
-        hr = SimConnect_AddClientEventToNotificationGroup(m_SimConnectHandle, GROUP0, EVENT_ALT_LOCK);
         hr = SimConnect_SetNotificationGroupPriority(m_SimConnectHandle, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
-        //
-        //hr = SimConnect_MapInputEventToClientEvent(m_SimConnectHandle, INPUT0, "z", EVENT_BRAKES);
-        //hr = SimConnect_SetInputGroupState(m_SimConnectHandle, INPUT0, SIMCONNECT_STATE_ON);
+        hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_1, DEFINITION_1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
         m_Connected = true;
         return true;
+    }
+
+
+    inline void MapClientEventToSimEvent(SIMCONNECT_NOTIFICATION_GROUP_ID group, SIMCONNECT_CLIENT_EVENT_ID eventId, const char* event_name)
+    {
+        if (FAILED(SimConnect_MapClientEventToSimEvent(m_SimConnectHandle, eventId, event_name)))
+        {
+            fprintf(stderr, "Failed to map event: %s\n", event_name);
+            return;
+        }
+
+        if (FAILED(SimConnect_AddClientEventToNotificationGroup(m_SimConnectHandle, group, eventId)))
+        {
+            fprintf(stderr, "Failed to add event to notification group: %s\n", event_name);
+            return;
+        }
     }
 public:
     inline const char* ToggleConnection(bool shutdown = false) noexcept
@@ -134,12 +152,6 @@ public:
     inline bool IsConnected() const noexcept
     {
         return m_Connected;
-    }
-
-
-    bool FetchData() const noexcept
-    {
-        return SUCCEEDED(SimConnect_RequestDataOnSimObjectType(m_SimConnectHandle, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER));
     }
 
 
@@ -171,21 +183,24 @@ public:
 
                 switch (evt->uEventID)
                 {
-                case EVENT_SIM_START:
-                    // Now the sim is running, request information on the user aircraft
-                    hr = SimConnect_RequestDataOnSimObjectType(m_SimConnectHandle, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER);
-                    break;
+
+                case EVENT_SIM_START: // Now the sim is running, request information on the user aircraft
                 case EVENT_AUTOPILOT:
-                    hr = SimConnect_RequestDataOnSimObjectType(m_SimConnectHandle, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER);
+                case EVENT_AIRSPEED_HOLD:
+                case EVENT_ALTITUDE_HOLD:
+                case EVENT_FLIGHT_DIRECTOR:
+                case EVENT_HEADING_LOCKED:
+                case EVENT_VERTICAL_SPEED_HOLD:
+                    //hr = SimConnect_RequestDataOnSimObjectType(m_SimConnectHandle, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER);
                     break;
                 default:
                     break;
                 }
                 break;
             }
-            case SIMCONNECT_RECV_ID_SIMOBJECT_DATA_BYTYPE:
+            case SIMCONNECT_RECV_ID_SIMOBJECT_DATA:
             {
-                SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE*)pData;
+                SIMCONNECT_RECV_SIMOBJECT_DATA* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA*)pData;
 
                 switch (pObjData->dwRequestID)
                 {
@@ -248,7 +263,6 @@ public:
             case SIMCONNECT_RECV_ID_QUIT:
             {
                 s->quit = true;
-                puts("Quit");
                 break;
             }
 

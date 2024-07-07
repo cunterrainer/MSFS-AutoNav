@@ -1,6 +1,4 @@
 #pragma once
-#include <thread>
-
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Output.H>
@@ -63,36 +61,58 @@ private:
         m_Info.updated = false;
     }
 private:
-    static inline void OnConnect(Fl_Widget* w, void* a)
+    static inline void OnConnectClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
         app->Connect();
     }
 
-
-    static inline void OnRefresh(Fl_Widget* w, void* a)
+    static inline void OnRefreshClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
         app->Refresh();
     }
 
-
-    static inline void OnAutopilot(Fl_Widget* w, void* a)
-    {
-        Application* app = (Application*)a;
-        app->AutoPilot();
-    }
-
-    static inline void OnAltHold(Fl_Widget* w, void* a)
-    {
-        Application* app = (Application*)a;
-        app->AltHold();
-    }
-
-    static inline void OnSetPosition(Fl_Widget* w, void* a)
+    static inline void OnSetPositionClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
         app->SetPosition();
+    }
+
+    static inline void OnAutopilotClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleAutopilot();
+    }
+
+    static inline void OnAltHoldClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleAltHold();
+    }
+
+    static inline void OnAirspeedHoldClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleAirspeedHold();
+    }
+
+    static inline void OnFlightDirectorClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleFlightDirector();
+    }
+
+    static inline void OnHeadingLockedClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleHeadingLocked();
+    }
+
+    static inline void OnVerticalSpeedHoldClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleVerticalSpeedHold();
     }
 public:
     Application() :
@@ -115,15 +135,16 @@ public:
         m_RefreshBtn(375, 50, 100, 22, "Refresh @refresh")
     {
         m_ConnectBtn.color(FL_RED);
-        m_ConnectBtn.callback(OnConnect, this);
-        m_AutopilotBtn.callback(OnAutopilot, this);
+        m_ConnectBtn.callback(OnConnectClicked, this);
+        m_AutopilotBtn.callback(OnAutopilotClicked, this);
 
         m_AirspeedValCounter.minimum(0);
         m_AirspeedValCounter.step(1);
         m_AirspeedValCounter.lstep(10);
         m_AirspeedValCounter.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_AirspeedHoldBtn.callback(OnAirspeedHoldClicked, this);
 
-        m_AltitudeLockBtn.callback(OnAltHold, this);
+        m_AltitudeLockBtn.callback(OnAltHoldClicked, this);
         m_AltitudeCounter.minimum(-3000);
         m_AltitudeCounter.step(100);
         m_AltitudeCounter.lstep(1000);
@@ -140,15 +161,18 @@ public:
         m_HeadingCounter.value(360);
         m_HeadingCounter.align(Fl_Align(FL_ALIGN_RIGHT));
         m_HeadingManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_HeadingLockedBtn.callback(OnHeadingLockedClicked, this);
 
         m_VerticalSpeedCounter.align(Fl_Align(FL_ALIGN_RIGHT));
         m_VerticalSpeedCounter.minimum(-15000);
         m_VerticalSpeedCounter.maximum(15000);
         m_VerticalSpeedCounter.step(100);
         m_VerticalSpeedCounter.lstep(1000);
+        m_FlightDirectorBtn.callback(OnFlightDirectorClicked, this);
+        m_VerticalSpeedHoldBtn.callback(OnVerticalSpeedHoldClicked, this);
 
-        m_RefreshBtn.callback(OnRefresh, this);
-        m_TestPositionBtn.callback(OnSetPosition, this);
+        m_RefreshBtn.callback(OnRefreshClicked, this);
+        m_TestPositionBtn.callback(OnSetPositionClicked, this);
 
         m_Window.resizable(m_Window);
         m_Window.end();
@@ -183,25 +207,50 @@ public:
     }
 
 
-    void Refresh() const noexcept
+    void Refresh() noexcept
     {
-        if (!m_Socket.FetchData())
-        {
-            return Fl::error("Failed to request data");
-        }
+        m_Socket.Dispatch(&m_Info);
     }
 
 
-    void AutoPilot() const noexcept
+    inline void ToggleAutopilot() noexcept
     {
         m_Socket.TransmitEvent(EVENT_AUTOPILOT);
         Refresh();
     }
 
 
-    void AltHold() const noexcept
+    inline void ToggleAltHold() noexcept
     {
-        m_Socket.TransmitEvent(EVENT_ALT_LOCK);
+        m_Socket.TransmitEvent(EVENT_ALTITUDE_HOLD);
+        Refresh();
+    }
+
+
+    inline void ToggleAirspeedHold() noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_AIRSPEED_HOLD);
+        Refresh();
+    }
+
+
+    inline void ToggleFlightDirector() noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_FLIGHT_DIRECTOR);
+        Refresh();
+    }
+
+
+    inline void ToggleHeadingLocked() noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_HEADING_LOCKED);
+        Refresh();
+    }
+
+
+    inline void ToggleVerticalSpeedHold() noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_VERTICAL_SPEED_HOLD);
         Refresh();
     }
 
