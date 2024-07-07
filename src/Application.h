@@ -76,7 +76,7 @@ private:
         app->Refresh();
     }
 
-    static inline void OnHeadingCounterChanged(Fl_Widget* w)
+    static inline void OnHeadingCounterChanged(Fl_Widget* w, void* a)
     {
         Fl_Counter* c = (Fl_Counter*)w;
         const int value = static_cast<int>(c->value());
@@ -84,6 +84,9 @@ private:
             c->value(359);
         else if (value == 360)
             c->value(0);
+
+        Application* app = (Application*)a;
+        app->SetHeading();
     }
 
     static inline void OnAltitudeCounterChanged(Fl_Widget* w, void* a)
@@ -191,7 +194,7 @@ public:
         m_HeadingCounter.lstep(10);
         m_HeadingCounter.value(0);
         m_HeadingCounter.align(Fl_Align(FL_ALIGN_RIGHT));
-        m_HeadingCounter.callback(OnHeadingCounterChanged);
+        m_HeadingCounter.callback(OnHeadingCounterChanged, this);
         m_HeadingManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
         m_HeadingManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
         m_HeadingLockedBtn.callback(OnHeadingLockedClicked, this);
@@ -288,6 +291,12 @@ public:
     inline void ToggleVerticalSpeedHold() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_VERTICAL_SPEED_HOLD);
+    }
+
+
+    inline void SetHeading() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_SET_HEADING, static_cast<DWORD>(m_HeadingCounter.value()));
     }
 
 
