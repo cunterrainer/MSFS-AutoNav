@@ -8,7 +8,7 @@ class AppNavUI {open
   } {
     Fl_Window {} {
       label {Auto Nav} open
-      xywh {703 224 600 480} type Double resizable visible
+      xywh {703 224 600 480} type Double hide resizable
     } {
       Fl_Output {} {
         label AirplaneTitle
@@ -24,7 +24,7 @@ class AppNavUI {open
       }
       Fl_Counter {} {
         label Airspeed
-        xywh {10 100 122 22} align 8 minimum 0 maximum 100000 step 1
+        xywh {10 100 122 22} align 8 minimum 0 step 1
       }
       Fl_Button {} {
         label {Airspeed hold}
@@ -51,7 +51,7 @@ class AppNavUI {open
         xywh {10 220 122 22} align 8
       }
       Fl_Output {} {
-        label {Approach captured} selected
+        label {Approach captured}
         xywh {10 250 122 22} align 8
       }
       Fl_Button {} {
@@ -63,8 +63,8 @@ class AppNavUI {open
         xywh {10 310 122 22}
       }
       Fl_Counter {} {
-        label Heading
-        xywh {10 340 122 22} align 8 minimum 0 maximum 361 step 1 value 360
+        label Heading selected
+        xywh {10 340 122 22} align 8 minimum -1 maximum 360 step 1 value 360
       }
       Fl_Output {} {
         label {Heading adjustable}

@@ -10,7 +10,6 @@ AppNavUI::AppNavUI() {
     { Fl_Output* o = new Fl_Output(10, 10, 122, 22, "AirplaneTitle");
       o->box(FL_FLAT_BOX);
       o->color(FL_BACKGROUND_COLOR);
-      o->selection_color(FL_BACKGROUND_COLOR);
       o->labeltype(FL_NO_LABEL);
     } // Fl_Output* o
     { new Fl_Button(10, 40, 122, 22, "Connect");
@@ -19,7 +18,6 @@ AppNavUI::AppNavUI() {
     } // Fl_Button* o
     { Fl_Counter* o = new Fl_Counter(10, 100, 122, 22, "Airspeed");
       o->minimum(0);
-      o->maximum(100000);
       o->step(1);
       o->align(Fl_Align(FL_ALIGN_RIGHT));
     } // Fl_Counter* o
@@ -47,8 +45,8 @@ AppNavUI::AppNavUI() {
     { new Fl_Button(10, 310, 122, 22, "Heading locked");
     } // Fl_Button* o
     { Fl_Counter* o = new Fl_Counter(10, 340, 122, 22, "Heading");
-      o->minimum(0);
-      o->maximum(361);
+      o->minimum(-1);
+      o->maximum(360);
       o->step(1);
       o->value(360);
       o->align(Fl_Align(FL_ALIGN_RIGHT));

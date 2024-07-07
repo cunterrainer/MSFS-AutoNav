@@ -75,6 +75,16 @@ private:
         app->Refresh();
     }
 
+    static inline void OnHeadingCounterChanged(Fl_Widget* w)
+    {
+        Fl_Counter* c = (Fl_Counter*)w;
+        const int value = static_cast<int>(c->value());
+        if (value == -1)
+            c->value(359);
+        else if (value == 360)
+            c->value(0);
+    }
+
     static inline void OnSetPositionClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
@@ -110,7 +120,7 @@ private:
         Application* app = (Application*)a;
         app->ToggleHeadingLocked();
     }
-
+    
     static inline void OnVerticalSpeedHoldClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
@@ -164,19 +174,18 @@ public:
         m_ApproachCapturedOut.align(Fl_Align(FL_ALIGN_RIGHT));
 
         m_HeadingCounter.tooltip("Adjust the current heading");
-        m_HeadingCounter.minimum(0);
-        m_HeadingCounter.maximum(361);
+        m_HeadingCounter.range(-1, 360);
         m_HeadingCounter.step(1);
         m_HeadingCounter.lstep(10);
-        m_HeadingCounter.value(360);
+        m_HeadingCounter.value(0);
         m_HeadingCounter.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_HeadingCounter.callback(OnHeadingCounterChanged);
         m_HeadingManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
         m_HeadingManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
         m_HeadingLockedBtn.callback(OnHeadingLockedClicked, this);
 
         m_VerticalSpeedCounter.align(Fl_Align(FL_ALIGN_RIGHT));
-        m_VerticalSpeedCounter.minimum(-15000);
-        m_VerticalSpeedCounter.maximum(15000);
+        m_VerticalSpeedCounter.range(-15000, 15000);
         m_VerticalSpeedCounter.step(100);
         m_VerticalSpeedCounter.lstep(1000);
         m_FlightDirectorBtn.callback(OnFlightDirectorClicked, this);
