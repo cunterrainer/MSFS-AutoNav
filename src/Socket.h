@@ -47,11 +47,6 @@ enum DATA_REQUEST_ID {
 struct Struct1
 {
     char   title[256];
-    double kohlsmann;
-    double altitude;
-    double latitude;
-    double longitude;
-
     double ap;
     double ap_airspeed;
     double ap_airspeed_hold;
@@ -91,12 +86,6 @@ private:
         HRESULT hr;
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_6, "Initial Position", NULL, SIMCONNECT_DATATYPE_INITPOSITION);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Title", NULL, SIMCONNECT_DATATYPE_STRING256);
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Kohlsman setting hg", "inHg");
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Plane Altitude", "feet");
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Plane Latitude", "degrees");
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Plane Longitude", "degrees");
-
-
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT MASTER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD VAR", "knots");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD", NULL);
@@ -223,10 +212,6 @@ public:
                 if (SUCCEEDED(StringCbLengthA(&ps->title[0], sizeof(ps->title), NULL))) // security check
                 {
                     std::strcpy(s->title, ps->title);
-                    s->kohlsmann = ps->kohlsmann;
-                    s->altitude = ps->altitude;
-                    s->latitude = ps->latitude;
-                    s->longitude = ps->longitude;
                     s->ap = ps->ap;
                     s->ap_airspeed = ps->ap_airspeed;
                     s->ap_airspeed_hold = ps->ap_airspeed_hold;
