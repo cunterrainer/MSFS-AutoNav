@@ -258,7 +258,7 @@ private:
 public:
     Application() :
         m_Window(670, 620, "Auto Nav"),
-        m_AirplaneTitleOut(10, 10, 122, 22, "AirplaneTitle"),
+        m_AirplaneTitleOut(10, 10, 500, 22, "AirplaneTitle"),
         m_ConnectBtn(10, 40, 120, 22, "Connect"),
         m_AutopilotBtn(10, 70, 120, 22, "Autopilot"),
         m_AirspeedValCounter(10, 100, 122, 22, "Airspeed"),
@@ -267,7 +267,7 @@ public:
         m_AltitudeLockBtn(10, 190, 120, 22, "Altitude locked"),
         m_AltitudeCounter(10, 220, 122, 22, "Altitude"),
         m_AltitudeManAdjOut(10, 250, 122, 22, "Altitude manually adjustable"),
-        m_ApproachHoldBtn(10, 252800, 122, 22, "Approach hold"),
+        m_ApproachHoldBtn(10, 280, 122, 22, "Approach hold"),
         m_FLCBtn(10, 310, 122, 22, "FLC"),
         m_FlightDirectorBtn(10, 340, 122, 22, "Flight Director"),
         m_NavLockedBtn(10, 370, 122, 22, "Nav"),
