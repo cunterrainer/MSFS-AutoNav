@@ -37,6 +37,7 @@ enum EVENT_ID {
     EVENT_SET_AIRSPEED, // TODO
     EVENT_SET_HEADING, // HEADING_BUG_SET
     EVENT_SET_VERTICAL_SPEED, // AP_VS_VAR_SET_ENGLISH
+    EVENT_SET_HEADING_IDX
 };
 
 enum DATA_DEFINE_ID {
@@ -70,6 +71,7 @@ struct Struct1
     double ap_vertical_speed;
     double ap_wing_lvl;
     double ap_yaw_damper;
+    double ap_heading_idx;
     bool updated = false;
     bool quit = false;
 };
@@ -114,6 +116,7 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT VERTICAL HOLD VAR", "feet/minute");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT WING LEVELER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT YAW DAMPER", NULL);
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING SLOT INDEX", NULL);
 
         MapClientEventToSimEvent(GROUP0, EVENT_AUTOPILOT, "AP_MASTER");
         MapClientEventToSimEvent(GROUP0, EVENT_AIRSPEED_HOLD, "AP_AIRSPEED_HOLD");
@@ -131,6 +134,7 @@ private:
         MapClientEventToSimEvent(GROUP0, EVENT_SET_HEADING, "HEADING_BUG_SET");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_VERTICAL_SPEED, "AP_VS_VAR_SET_ENGLISH");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_AIRSPEED, "AP_SPD_VAR_SET");
+        MapClientEventToSimEvent(GROUP0, EVENT_SET_HEADING_IDX, "HEADING_SLOT_INDEX_SET");
 
         hr = SimConnect_SetNotificationGroupPriority(m_SimConnectHandle, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
         hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_1, DEFINITION_1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
@@ -260,6 +264,7 @@ public:
                     s->ap_vertical_speed = ps->ap_vertical_speed;
                     s->ap_wing_lvl = ps->ap_wing_lvl;
                     s->ap_yaw_damper = ps->ap_yaw_damper;
+                    s->ap_heading_idx = ps->ap_heading_idx;
                     s->updated = true;
 
 

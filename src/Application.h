@@ -2,6 +2,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Choice.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Counter.H>
 #include <FL/Fl_Value_Output.H>
@@ -37,6 +38,7 @@ private:
     Fl_Button  m_RefreshBtn;
     Fl_Button  m_WingLvlBtn;
     Fl_Button  m_YawDamperBtn;
+    Fl_Choice  m_HeadingIdxChoice;
 
     Socket m_Socket;
     Struct1 m_Info;
@@ -65,6 +67,7 @@ private:
         m_VerticalSpeedCounter.value(m_Info.ap_vertical_speed);
         m_WingLvlBtn.color(m_Info.ap_wing_lvl != 0.0 ? FL_GREEN : FL_RED);
         m_YawDamperBtn.color(m_Info.ap_yaw_damper != 0.0 ? FL_GREEN : FL_RED);
+        m_HeadingIdxChoice.value((int)m_Info.ap_heading_idx - 1);
 
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
@@ -93,6 +96,7 @@ private:
         m_Info.ap_vertical_speed = 0;
         m_Info.ap_alt_manually_adjustable = 0;
         m_Info.ap_heading_manually_adjustable = 0;
+        m_HeadingIdxChoice.value(-1);
 
         m_AutopilotBtn.color(FL_BACKGROUND_COLOR);
         m_AirspeedHoldBtn.color(FL_BACKGROUND_COLOR);
@@ -255,9 +259,15 @@ private:
         Application* app = (Application*)a;
         app->ToggleYawDamper();
     }
+
+    static inline void OnHeadingIdxChosen(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->SetHeadingIndex();
+    }
 public:
     Application() :
-        m_Window(670, 620, "Auto Nav"),
+        m_Window(670, 650, "Auto Nav"),
         m_AirplaneTitleOut(10, 10, 500, 22, "AirplaneTitle"),
         m_ConnectBtn(10, 40, 120, 22, "Connect"),
         m_AutopilotBtn(10, 70, 120, 22, "Autopilot"),
@@ -279,7 +289,8 @@ public:
         m_TestPositionBtn(375, 40, 100, 22, "Test position"),
         m_RefreshBtn(375, 70, 100, 22, "Refresh @refresh"),
         m_WingLvlBtn(10, 550, 122, 22, "Wing Level"),
-        m_YawDamperBtn(10, 580, 122, 22, "Yaw Damper")
+        m_YawDamperBtn(10, 580, 122, 22, "Yaw Damper"),
+        m_HeadingIdxChoice(10, 610, 122, 22, "Heading index")
     {
         Fl_RGB_Image i(sg_Icon_Data, sg_Icon_Width, sg_Icon_Height, sg_Icon_Channel, 0);
         m_Window.icon(&i);
@@ -335,6 +346,12 @@ public:
 
         m_WingLvlBtn.callback(OnWingLvlClicked, this);
         m_YawDamperBtn.callback(OnYawDamperClicked, this);
+
+        m_HeadingIdxChoice.add("1");
+        m_HeadingIdxChoice.add("2");
+        m_HeadingIdxChoice.add("3");
+        m_HeadingIdxChoice.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_HeadingIdxChoice.callback(OnHeadingIdxChosen, this);
 
         m_RefreshBtn.callback(OnRefreshClicked, this);
         m_TestPositionBtn.callback(OnSetPositionClicked, this);
@@ -468,6 +485,12 @@ public:
     inline void SetAirSpeed() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_SET_AIRSPEED, static_cast<DWORD>(m_AirspeedValCounter.value()));
+    }
+
+
+    inline void SetHeadingIndex() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_SET_HEADING_IDX, static_cast<DWORD>(m_HeadingIdxChoice.value() + 1));
     }
 
 
