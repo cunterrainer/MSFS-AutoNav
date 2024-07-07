@@ -23,6 +23,7 @@ private:
     Fl_Output  m_AltitudeManAdjOut;
     Fl_Button  M_ApproachHoldBtn;
     Fl_Button  m_FlightDirectorBtn;
+    Fl_Button  m_NavLockedBtn;
     Fl_Button  m_HeadingLockedBtn;
     Fl_Counter m_HeadingCounter;
     Fl_Output  m_HeadingManAdjOut;
@@ -48,6 +49,7 @@ private:
         m_AltitudeManAdjOut.value(m_Info.ap_alt_manually_adjustable != 0.0 ? "True" : "False");
         M_ApproachHoldBtn.color(m_Info.ap_approach_hold != 0.0 ? FL_GREEN : FL_RED);
         m_FlightDirectorBtn.color(m_Info.ap_flight_director != 0.0 ? FL_GREEN : FL_RED);
+        m_NavLockedBtn.color(m_Info.ap_nav_lock != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingLockedBtn.color(m_Info.ap_heading_lock != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingCounter.value(m_Info.ap_heading_lock_dir);
         m_HeadingManAdjOut.value(m_Info.ap_heading_manually_adjustable != 0.0 ? "True" : "False");
@@ -59,6 +61,7 @@ private:
         m_AltitudeLockBtn.redraw();
         M_ApproachHoldBtn.redraw();
         m_FlightDirectorBtn.redraw();
+        m_NavLockedBtn.redraw();
         m_HeadingLockedBtn.redraw();
         m_VerticalSpeedHoldBtn.redraw();
         m_Info.updated = false;
@@ -137,6 +140,12 @@ private:
         app->ToggleFlightDirector();
     }
 
+    static inline void OnNavLockedClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleNavLocked();
+    }
+
     static inline void OnHeadingLockedClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
@@ -150,7 +159,7 @@ private:
     }
 public:
     Application() :
-        m_Window(600, 480, "Auto Nav"),
+        m_Window(650, 520, "Auto Nav"),
         m_AirplaneTitleOut(10, 10, 122, 22, "AirplaneTitle"),
         m_ConnectBtn(10, 40, 120, 22, "Connect"),
         m_AutopilotBtn(10, 70, 120, 22, "Autopilot"),
@@ -161,13 +170,14 @@ public:
         m_AltitudeManAdjOut(10, 220, 122, 22, "Altitude manually adjustable"),
         M_ApproachHoldBtn(10, 250, 122, 22, "Approach hold"),
         m_FlightDirectorBtn(10, 280, 122, 22, "Flight Director"),
-        m_HeadingLockedBtn(10, 310, 122, 22, "Heading locked"),
-        m_HeadingCounter(10, 340, 122, 22, "Heading"),
-        m_HeadingManAdjOut(10, 370, 122, 22, "Heading adjustable"),
-        m_VerticalSpeedHoldBtn(10, 400, 122, 22, "Vertical speed hold"),
-        m_VerticalSpeedCounter(10, 430, 122, 22, "Vertical speed"),
-        m_TestPositionBtn(375, 20, 100, 22, "Test position"),
-        m_RefreshBtn(375, 50, 100, 22, "Refresh @refresh")
+        m_NavLockedBtn(10, 310, 122, 22, "Nav"),
+        m_HeadingLockedBtn(10, 340, 122, 22, "Heading locked"),
+        m_HeadingCounter(10, 370, 122, 22, "Heading"),
+        m_HeadingManAdjOut(10, 400, 122, 22, "Heading adjustable"),
+        m_VerticalSpeedHoldBtn(10, 430, 122, 22, "Vertical speed hold"),
+        m_VerticalSpeedCounter(10, 460, 122, 22, "Vertical speed"),
+        m_TestPositionBtn(375, 40, 100, 22, "Test position"),
+        m_RefreshBtn(375, 70, 100, 22, "Refresh @refresh")
     {
         m_AirplaneTitleOut.box(FL_FLAT_BOX);
         m_AirplaneTitleOut.color(FL_BACKGROUND_COLOR);
@@ -211,6 +221,7 @@ public:
         m_VerticalSpeedCounter.lstep(1000);
         m_VerticalSpeedCounter.callback(OnVerticalSpeedChanged, this);
         m_FlightDirectorBtn.callback(OnFlightDirectorClicked, this);
+        m_NavLockedBtn.callback(OnNavLockedClicked, this);
         m_VerticalSpeedHoldBtn.callback(OnVerticalSpeedHoldClicked, this);
 
         m_RefreshBtn.callback(OnRefreshClicked, this);
@@ -286,6 +297,12 @@ public:
     inline void ToggleFlightDirector() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_FLIGHT_DIRECTOR);
+    }
+
+
+    inline void ToggleNavLocked() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_NAV_LOCKED);
     }
 
 

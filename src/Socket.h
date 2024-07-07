@@ -24,6 +24,7 @@ enum EVENT_ID {
     EVENT_AIRSPEED_HOLD, // AP_AIRSPEED_HOLD
     EVENT_APPROACH_HOLD, // AP_APR_HOLD
     EVENT_FLIGHT_DIRECTOR, // TOGGLE_FLIGHT_DIRECTOR
+    EVENT_NAV_LOCKED, // AP_NAV1_HOLD
     EVENT_HEADING_LOCKED, // AP_HDG_HOLD
     EVENT_VERTICAL_SPEED_HOLD, // AP_PANEL_VS_HOLD
 
@@ -55,6 +56,7 @@ struct Struct1
     double ap_alt_manually_adjustable;
     double ap_approach_hold;
     double ap_flight_director;
+    double ap_nav_lock;
     double ap_heading_lock;
     double ap_heading_lock_dir;
     double ap_heading_manually_adjustable;
@@ -94,6 +96,7 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT ALTITUDE MANUALLY TUNABLE", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT APPROACH HOLD", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT FLIGHT DIRECTOR ACTIVE", NULL);
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT NAV1 LOCK", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING LOCK", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING LOCK DIR", "degrees");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING MANUALLY TUNABLE", NULL);
@@ -105,6 +108,7 @@ private:
         MapClientEventToSimEvent(GROUP0, EVENT_ALTITUDE_HOLD, "AP_ALT_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_APPROACH_HOLD, "AP_APR_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_FLIGHT_DIRECTOR, "TOGGLE_FLIGHT_DIRECTOR");
+        MapClientEventToSimEvent(GROUP0, EVENT_NAV_LOCKED, "AP_NAV1_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_HEADING_LOCKED, "AP_HDG_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_VERTICAL_SPEED_HOLD, "AP_VS_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_ALTITUDE, "AP_ALT_VAR_SET_ENGLISH");
@@ -220,6 +224,7 @@ public:
                     s->ap_alt_manually_adjustable = ps->ap_alt_manually_adjustable;
                     s->ap_approach_hold = ps->ap_approach_hold;
                     s->ap_flight_director = ps->ap_flight_director;
+                    s->ap_nav_lock = ps->ap_nav_lock;
                     s->ap_heading_lock = ps->ap_heading_lock;
                     s->ap_heading_lock_dir = ps->ap_heading_lock_dir;
                     s->ap_heading_manually_adjustable = ps->ap_heading_manually_adjustable;
@@ -239,6 +244,8 @@ public:
 
                     printf("Approach captured: %.0lf\n", ps->ap_approach_hold);
                     printf("Flight Director: %.0lf\n", ps->ap_flight_director);
+                    printf("Nav locked: %.0lf\n", ps->ap_nav_lock);
+                    printf("Heading locked: %.0lf\n", ps->ap_heading_lock);
                     printf("Heading direction: %.2lf\n", ps->ap_heading_lock_dir);
 
                     printf("Heading adj: %.0lf\n", ps->ap_heading_manually_adjustable);
