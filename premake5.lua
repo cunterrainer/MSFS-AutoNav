@@ -164,5 +164,14 @@ project "AutoNav"
         libdirs "Dependencies/fltk/Build/lib/Debug"
     filter { "configurations:Release" }
         kind "WindowedApp"
-        links "SimConnect"
+        links {
+            "SimConnect",
+            "fltk_forms",
+            "fltk_images",
+            "fltk_jpeg",
+            "fltk_png",
+            "fltk_z",
+            "fltk"
+        }
+        libdirs "Dependencies/fltk/Build/lib/Release"
         entrypoint "mainCRTStartup"
