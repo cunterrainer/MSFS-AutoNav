@@ -126,6 +126,7 @@ private:
         MapClientEventToSimEvent(GROUP0, EVENT_SET_ALTITUDE, "AP_ALT_VAR_SET_ENGLISH");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_HEADING, "HEADING_BUG_SET");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_VERTICAL_SPEED, "AP_VS_VAR_SET_ENGLISH");
+        MapClientEventToSimEvent(GROUP0, EVENT_SET_AIRSPEED, "AP_SPD_VAR_SET");
 
         hr = SimConnect_SetNotificationGroupPriority(m_SimConnectHandle, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
         hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_1, DEFINITION_1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
