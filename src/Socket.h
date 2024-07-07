@@ -28,6 +28,8 @@ enum EVENT_ID {
     EVENT_NAV_LOCKED, // AP_NAV1_HOLD
     EVENT_HEADING_LOCKED, // AP_HDG_HOLD
     EVENT_VERTICAL_SPEED_HOLD, // AP_PANEL_VS_HOLD
+    EVENT_WING_LVL_HOLD, // AP_WING_LEVELER
+    EVENT_YAW_DAMPER_HOLD, // YAW_DAMPER_TOGGLE
 
     // Counters
     EVENT_SET_ALTITUDE, // AP_ALT_VAR_SET_ENGLISH in feet
@@ -64,6 +66,8 @@ struct Struct1
     double ap_heading_manually_adjustable;
     double ap_vertical_hold;
     double ap_vertical_speed;
+    double ap_wing_lvl;
+    double ap_yaw_damper;
     bool updated = false;
     bool quit = false;
 };
@@ -97,7 +101,7 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT ALTITUDE LOCK VAR", "feet");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT ALTITUDE MANUALLY TUNABLE", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT APPROACH HOLD", NULL);
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT FLIGHT LEVEL CHANGE", NULL); // AUTOPILOT WING LEVELER
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT FLIGHT LEVEL CHANGE", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT FLIGHT DIRECTOR ACTIVE", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT NAV1 LOCK", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING LOCK", NULL);
@@ -105,6 +109,8 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING MANUALLY TUNABLE", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT VERTICAL HOLD", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT VERTICAL HOLD VAR", "feet/minute");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT WING LEVELER", NULL);
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT YAW DAMPER", NULL);
 
         MapClientEventToSimEvent(GROUP0, EVENT_AUTOPILOT, "AP_MASTER");
         MapClientEventToSimEvent(GROUP0, EVENT_AIRSPEED_HOLD, "AP_AIRSPEED_HOLD");
@@ -115,6 +121,8 @@ private:
         MapClientEventToSimEvent(GROUP0, EVENT_NAV_LOCKED, "AP_NAV1_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_HEADING_LOCKED, "AP_HDG_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_VERTICAL_SPEED_HOLD, "AP_VS_HOLD");
+        MapClientEventToSimEvent(GROUP0, EVENT_WING_LVL_HOLD, "AP_WING_LEVELER");
+        MapClientEventToSimEvent(GROUP0, EVENT_YAW_DAMPER_HOLD, "YAW_DAMPER_TOGGLE");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_ALTITUDE, "AP_ALT_VAR_SET_ENGLISH");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_HEADING, "HEADING_BUG_SET");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_VERTICAL_SPEED, "AP_VS_VAR_SET_ENGLISH");
@@ -235,6 +243,8 @@ public:
                     s->ap_heading_manually_adjustable = ps->ap_heading_manually_adjustable;
                     s->ap_vertical_hold = ps->ap_vertical_hold;
                     s->ap_vertical_speed = ps->ap_vertical_speed;
+                    s->ap_wing_lvl = ps->ap_wing_lvl;
+                    s->ap_yaw_damper = ps->ap_yaw_damper;
                     s->updated = true;
 
 

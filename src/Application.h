@@ -32,6 +32,8 @@ private:
     Fl_Counter m_VerticalSpeedCounter;
     Fl_Button  m_TestPositionBtn;
     Fl_Button  m_RefreshBtn;
+    Fl_Button  m_WingLvlBtn;
+    Fl_Button  m_YawDamperBtn;
 
     Socket m_Socket;
     Struct1 m_Info;
@@ -57,6 +59,8 @@ private:
         m_HeadingManAdjOut.value(m_Info.ap_heading_manually_adjustable != 0.0 ? "True" : "False");
         m_VerticalSpeedHoldBtn.color(m_Info.ap_vertical_hold != 0.0 ? FL_GREEN : FL_RED);
         m_VerticalSpeedCounter.value(m_Info.ap_vertical_speed);
+        m_WingLvlBtn.color(m_Info.ap_wing_lvl != 0.0 ? FL_GREEN : FL_RED);
+        m_YawDamperBtn.color(m_Info.ap_yaw_damper != 0.0 ? FL_GREEN : FL_RED);
 
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
@@ -67,6 +71,8 @@ private:
         m_NavLockedBtn.redraw();
         m_HeadingLockedBtn.redraw();
         m_VerticalSpeedHoldBtn.redraw();
+        m_WingLvlBtn.redraw();
+        m_YawDamperBtn.redraw();
         m_Info.updated = false;
     }
 private:
@@ -166,9 +172,21 @@ private:
         Application* app = (Application*)a;
         app->ToggleVerticalSpeedHold();
     }
+
+    static inline void OnWingLvlClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleWingLvl();
+    }
+
+    static inline void OnYawDamperClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleYawDamper();
+    }
 public:
     Application() :
-        m_Window(670, 540, "Auto Nav"),
+        m_Window(670, 590, "Auto Nav"),
         m_AirplaneTitleOut(10, 10, 122, 22, "AirplaneTitle"),
         m_ConnectBtn(10, 40, 120, 22, "Connect"),
         m_AutopilotBtn(10, 70, 120, 22, "Autopilot"),
@@ -187,7 +205,9 @@ public:
         m_VerticalSpeedHoldBtn(10, 460, 122, 22, "Vertical speed hold"),
         m_VerticalSpeedCounter(10, 490, 122, 22, "Vertical speed"),
         m_TestPositionBtn(375, 40, 100, 22, "Test position"),
-        m_RefreshBtn(375, 70, 100, 22, "Refresh @refresh")
+        m_RefreshBtn(375, 70, 100, 22, "Refresh @refresh"),
+        m_WingLvlBtn(10, 520, 122, 22, "Wing Level"),
+        m_YawDamperBtn(10, 550, 122, 22, "Yaw Damper")
     {
         m_AirplaneTitleOut.box(FL_FLAT_BOX);
         m_AirplaneTitleOut.color(FL_BACKGROUND_COLOR);
@@ -234,6 +254,9 @@ public:
         m_FlightDirectorBtn.callback(OnFlightDirectorClicked, this);
         m_NavLockedBtn.callback(OnNavLockedClicked, this);
         m_VerticalSpeedHoldBtn.callback(OnVerticalSpeedHoldClicked, this);
+
+        m_WingLvlBtn.callback(OnWingLvlClicked, this);
+        m_YawDamperBtn.callback(OnYawDamperClicked, this);
 
         m_RefreshBtn.callback(OnRefreshClicked, this);
         m_TestPositionBtn.callback(OnSetPositionClicked, this);
@@ -332,6 +355,18 @@ public:
     inline void ToggleVerticalSpeedHold() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_VERTICAL_SPEED_HOLD);
+    }
+
+
+    inline void ToggleWingLvl() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_WING_LVL_HOLD);
+    }
+
+
+    inline void ToggleYawDamper() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_YAW_DAMPER_HOLD);
     }
 
 
