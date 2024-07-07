@@ -21,7 +21,7 @@ private:
     Fl_Button  m_AltitudeLockBtn;
     Fl_Counter m_AltitudeCounter;
     Fl_Output  m_AltitudeManAdjOut;
-    Fl_Output  m_ApproachCapturedOut;
+    Fl_Button  M_ApproachHoldBtn;
     Fl_Button  m_FlightDirectorBtn;
     Fl_Button  m_HeadingLockedBtn;
     Fl_Counter m_HeadingCounter;
@@ -46,7 +46,7 @@ private:
         m_AltitudeLockBtn.color(m_Info.ap_alt_lock != 0.0 ? FL_GREEN : FL_RED);
         m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
         m_AltitudeManAdjOut.value(m_Info.ap_alt_manually_adjustable != 0.0 ? "True" : "False");
-        m_ApproachCapturedOut.value(m_Info.ap_approach_captured != 0.0 ? "True" : "False");
+        M_ApproachHoldBtn.color(m_Info.ap_approach_hold != 0.0 ? FL_GREEN : FL_RED);
         m_FlightDirectorBtn.color(m_Info.ap_flight_director != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingLockedBtn.color(m_Info.ap_heading_lock != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingCounter.value(m_Info.ap_heading_lock_dir);
@@ -57,6 +57,7 @@ private:
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
         m_AltitudeLockBtn.redraw();
+        M_ApproachHoldBtn.redraw();
         m_FlightDirectorBtn.redraw();
         m_HeadingLockedBtn.redraw();
         m_VerticalSpeedHoldBtn.redraw();
@@ -109,6 +110,12 @@ private:
         app->ToggleAirspeedHold();
     }
 
+    static inline void OnApproachHoldClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleApproachHold();
+    }
+
     static inline void OnFlightDirectorClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
@@ -137,7 +144,7 @@ public:
         m_AltitudeLockBtn(10, 160, 120, 22, "Altitude locked"),
         m_AltitudeCounter(10, 190, 122, 22, "Altitude"),
         m_AltitudeManAdjOut(10, 220, 122, 22, "Altitude manually adjustable"),
-        m_ApproachCapturedOut(10, 250, 122, 22, "Approach captured"),
+        M_ApproachHoldBtn(10, 250, 122, 22, "Approach hold"),
         m_FlightDirectorBtn(10, 280, 122, 22, "Flight Director"),
         m_HeadingLockedBtn(10, 310, 122, 22, "Heading locked"),
         m_HeadingCounter(10, 340, 122, 22, "Heading"),
@@ -170,8 +177,6 @@ public:
 
         m_AltitudeManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
         m_AltitudeManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
-        m_ApproachCapturedOut.cursor_color(FL_BACKGROUND2_COLOR);
-        m_ApproachCapturedOut.align(Fl_Align(FL_ALIGN_RIGHT));
 
         m_HeadingCounter.tooltip("Adjust the current heading");
         m_HeadingCounter.range(-1, 360);
@@ -252,6 +257,12 @@ public:
     inline void ToggleAirspeedHold() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_AIRSPEED_HOLD);
+    }
+
+
+    inline void ToggleApproachHold() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_APPROACH_HOLD);
     }
 
 
