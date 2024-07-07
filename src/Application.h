@@ -13,6 +13,7 @@ class Application
 private:
     Fl_Double_Window m_Window;
 
+    Fl_Output m_AirplaneTitleOut;
     Fl_Button  m_ConnectBtn;
     Fl_Button  m_AutopilotBtn;
     Fl_Counter m_AirspeedValCounter;
@@ -38,6 +39,7 @@ private:
         if (!m_Info.updated)
             return;
 
+        m_AirplaneTitleOut.value(m_Info.title);
         m_AutopilotBtn.color(m_Info.ap != 0.0 ? FL_GREEN : FL_RED);
         m_AirspeedValCounter.value(m_Info.ap_airspeed);
         m_AirspeedHoldBtn.color(m_Info.ap_airspeed_hold != 0.0 ? FL_GREEN : FL_RED);
@@ -116,24 +118,30 @@ private:
     }
 public:
     Application() :
-        m_Window(600, 450, "Auto Nav"),
-        m_ConnectBtn(10, 20, 120, 22, "Connect"),
-        m_AutopilotBtn(10, 50, 120, 22, "Autopilot"),
-        m_AirspeedValCounter(10, 80, 122, 22, "Airspeed"),
-        m_AirspeedHoldBtn(10, 110, 120, 22, "Airspeed hold"),
-        m_AltitudeLockBtn(10, 140, 120, 22, "Altitude locked"),
-        m_AltitudeCounter(10, 170, 122, 22, "Altitude"),
-        m_AltitudeManAdjOut(10, 200, 122, 22, "Altitude manually adjustable"),
-        m_ApproachCapturedOut(10, 230, 122, 22, "Approach captured"),
-        m_FlightDirectorBtn(10, 260, 122, 22, "Flight Director"),
-        m_HeadingLockedBtn(10, 290, 122, 22, "Heading locked"),
-        m_HeadingCounter(10, 320, 122, 22, "Heading"),
-        m_HeadingManAdjOut(10, 350, 122, 22, "Heading adjustable"),
-        m_VerticalSpeedHoldBtn(10, 380, 122, 22, "Vertical speed hold"),
-        m_VerticalSpeedCounter(10, 410, 122, 22, "Vertical speed"),
+        m_Window(600, 480, "Auto Nav"),
+        m_AirplaneTitleOut(10, 10, 122, 22, "AirplaneTitle"),
+        m_ConnectBtn(10, 40, 120, 22, "Connect"),
+        m_AutopilotBtn(10, 70, 120, 22, "Autopilot"),
+        m_AirspeedValCounter(10, 100, 122, 22, "Airspeed"),
+        m_AirspeedHoldBtn(10, 130, 120, 22, "Airspeed hold"),
+        m_AltitudeLockBtn(10, 160, 120, 22, "Altitude locked"),
+        m_AltitudeCounter(10, 190, 122, 22, "Altitude"),
+        m_AltitudeManAdjOut(10, 220, 122, 22, "Altitude manually adjustable"),
+        m_ApproachCapturedOut(10, 250, 122, 22, "Approach captured"),
+        m_FlightDirectorBtn(10, 280, 122, 22, "Flight Director"),
+        m_HeadingLockedBtn(10, 310, 122, 22, "Heading locked"),
+        m_HeadingCounter(10, 340, 122, 22, "Heading"),
+        m_HeadingManAdjOut(10, 370, 122, 22, "Heading adjustable"),
+        m_VerticalSpeedHoldBtn(10, 400, 122, 22, "Vertical speed hold"),
+        m_VerticalSpeedCounter(10, 430, 122, 22, "Vertical speed"),
         m_TestPositionBtn(375, 20, 100, 22, "Test position"),
         m_RefreshBtn(375, 50, 100, 22, "Refresh @refresh")
     {
+        m_AirplaneTitleOut.box(FL_FLAT_BOX);
+        m_AirplaneTitleOut.color(FL_BACKGROUND_COLOR);
+        m_AirplaneTitleOut.labeltype(FL_NO_LABEL);
+        m_AirplaneTitleOut.visible_focus(false);
+
         m_ConnectBtn.color(FL_RED);
         m_ConnectBtn.callback(OnConnectClicked, this);
         m_AutopilotBtn.callback(OnAutopilotClicked, this);
@@ -151,6 +159,8 @@ public:
         m_AltitudeCounter.align(Fl_Align(FL_ALIGN_RIGHT));
 
         m_AltitudeManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_AltitudeManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
+        m_ApproachCapturedOut.cursor_color(FL_BACKGROUND2_COLOR);
         m_ApproachCapturedOut.align(Fl_Align(FL_ALIGN_RIGHT));
 
         m_HeadingCounter.tooltip("Adjust the current heading");
@@ -161,6 +171,7 @@ public:
         m_HeadingCounter.value(360);
         m_HeadingCounter.align(Fl_Align(FL_ALIGN_RIGHT));
         m_HeadingManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_HeadingManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
         m_HeadingLockedBtn.callback(OnHeadingLockedClicked, this);
 
         m_VerticalSpeedCounter.align(Fl_Align(FL_ALIGN_RIGHT));

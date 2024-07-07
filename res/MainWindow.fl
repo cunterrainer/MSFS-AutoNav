@@ -7,64 +7,76 @@ class AppNavUI {open
   Function {AppNavUI()} {open
   } {
     Fl_Window {} {
-      label {Auto Nav} open selected
-      xywh {-784 223 600 420} type Double hide resizable
+      label {Auto Nav} open
+      xywh {703 224 600 480} type Double resizable visible
     } {
+      Fl_Output {} {
+        label AirplaneTitle
+        xywh {10 10 122 22} box FLAT_BOX color 49 labeltype NO_LABEL
+      }
       Fl_Button {} {
         label Connect
-        xywh {10 20 120 22}
+        xywh {10 40 122 22}
       }
       Fl_Button {} {
         label Autopilot
-        xywh {10 50 120 22}
+        xywh {10 70 122 22}
       }
-      Fl_Value_Output {} {
+      Fl_Counter {} {
         label Airspeed
-        xywh {10 80 122 22} align 8 maximum 100000
+        xywh {10 100 122 22} align 8 minimum 0 maximum 100000 step 1
       }
       Fl_Button {} {
         label {Airspeed hold}
-        xywh {10 110 120 22}
+        xywh {10 130 122 22}
       }
       Fl_Button {} {
         label {Altitude locked}
-        xywh {10 140 120 22}
+        xywh {10 160 122 22}
       }
       Fl_Counter {} {
         label Altitude
-        xywh {10 170 122 22} align 8 minimum 0 step 100
+        xywh {10 190 122 22} align 8 minimum 0 step 100
       }
       Fl_Button {} {
         label {Test position}
-        xywh {375 20 100 22}
+        xywh {375 20 122 22}
+      }
+      Fl_Button {} {
+        label {Refresh @refresh}
+        xywh {375 50 122 22}
       }
       Fl_Output {} {
         label {Altitude manually adjustable}
-        xywh {10 200 122 22} align 8
+        xywh {10 220 122 22} align 8
       }
       Fl_Output {} {
-        label {Approach captured}
-        xywh {10 230 122 22} align 8
+        label {Approach captured} selected
+        xywh {10 250 122 22} align 8
       }
       Fl_Button {} {
         label {Flight Director}
-        xywh {10 260 122 22}
+        xywh {10 280 122 22}
+      }
+      Fl_Button {} {
+        label {Heading locked}
+        xywh {10 310 122 22}
       }
       Fl_Counter {} {
         label Heading
-        xywh {10 290 122 22} align 8 minimum 0 maximum 361 step 1 value 360
+        xywh {10 340 122 22} align 8 minimum 0 maximum 361 step 1 value 360
       }
       Fl_Output {} {
         label {Heading adjustable}
-        xywh {10 320 122 22} align 8
+        xywh {10 370 122 22} align 8
       }
       Fl_Button {} {
         label {Vertical speed hold}
-        xywh {10 350 122 22}
+        xywh {10 400 122 22}
       }
       Fl_Counter {} {
         label {Vertical speed}
-        xywh {10 380 122 22} align 8 minimum -15000 maximum 15000 step 100
+        xywh {10 430 122 22} align 8 minimum -15000 maximum 15000 step 100
       }
     }
   }
