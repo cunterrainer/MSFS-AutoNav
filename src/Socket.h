@@ -30,6 +30,7 @@ enum EVENT_ID {
     EVENT_VERTICAL_SPEED_HOLD, // AP_PANEL_VS_HOLD
     EVENT_WING_LVL_HOLD, // AP_WING_LEVELER
     EVENT_YAW_DAMPER_HOLD, // YAW_DAMPER_TOGGLE
+    EVENT_AUTO_THROTTLE_ARM,
 
     // Counters
     EVENT_SET_ALTITUDE, // AP_ALT_VAR_SET_ENGLISH in feet
@@ -54,6 +55,7 @@ struct Struct1
     double ap;
     double ap_airspeed;
     double ap_airspeed_hold;
+    double ap_auto_throttle;
     double ap_alt_lock;
     double ap_alt_lock_var;
     double ap_alt_manually_adjustable;
@@ -97,6 +99,7 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT MASTER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD VAR", "knots");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD", NULL);
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT THROTTLE ARM", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT ALTITUDE LOCK", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT ALTITUDE LOCK VAR", "feet");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT ALTITUDE MANUALLY TUNABLE", NULL);
@@ -122,6 +125,7 @@ private:
         MapClientEventToSimEvent(GROUP0, EVENT_HEADING_LOCKED, "AP_HDG_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_VERTICAL_SPEED_HOLD, "AP_VS_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_WING_LVL_HOLD, "AP_WING_LEVELER");
+        MapClientEventToSimEvent(GROUP0, EVENT_AUTO_THROTTLE_ARM, "AUTO_THROTTLE_ARM");
         MapClientEventToSimEvent(GROUP0, EVENT_YAW_DAMPER_HOLD, "YAW_DAMPER_TOGGLE");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_ALTITUDE, "AP_ALT_VAR_SET_ENGLISH");
         MapClientEventToSimEvent(GROUP0, EVENT_SET_HEADING, "HEADING_BUG_SET");
@@ -213,6 +217,7 @@ public:
             case EVENT_VERTICAL_SPEED_HOLD:
             case EVENT_WING_LVL_HOLD:
             case EVENT_YAW_DAMPER_HOLD:
+            case EVENT_AUTO_THROTTLE_ARM:
             case EVENT_SET_ALTITUDE:
             case EVENT_SET_AIRSPEED:
             case EVENT_SET_HEADING:
@@ -240,6 +245,7 @@ public:
                     s->ap = ps->ap;
                     s->ap_airspeed = ps->ap_airspeed;
                     s->ap_airspeed_hold = ps->ap_airspeed_hold;
+                    s->ap_auto_throttle = ps->ap_auto_throttle;
                     s->ap_alt_lock = ps->ap_alt_lock;
                     s->ap_alt_lock_var = ps->ap_alt_lock_var;
                     s->ap_alt_manually_adjustable = ps->ap_alt_manually_adjustable;

@@ -20,6 +20,7 @@ private:
     Fl_Button  m_AutopilotBtn;
     Fl_Counter m_AirspeedValCounter;
     Fl_Button  m_AirspeedHoldBtn;
+    Fl_Button  m_AutoThrottleBtn;
     Fl_Button  m_AltitudeLockBtn;
     Fl_Counter m_AltitudeCounter;
     Fl_Output  m_AltitudeManAdjOut;
@@ -49,6 +50,7 @@ private:
         m_AutopilotBtn.color(m_Info.ap != 0.0 ? FL_GREEN : FL_RED);
         m_AirspeedValCounter.value(m_Info.ap_airspeed);
         m_AirspeedHoldBtn.color(m_Info.ap_airspeed_hold != 0.0 ? FL_GREEN : FL_RED);
+        m_AutoThrottleBtn.color(m_Info.ap_auto_throttle != 0.0 ? FL_GREEN : FL_RED);
         m_AltitudeLockBtn.color(m_Info.ap_alt_lock != 0.0 ? FL_GREEN : FL_RED);
         m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
         m_AltitudeManAdjOut.value(m_Info.ap_alt_manually_adjustable != 0.0 ? "True" : "False");
@@ -66,6 +68,7 @@ private:
 
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
+        m_AutoThrottleBtn.redraw();
         m_AltitudeLockBtn.redraw();
         m_ApproachHoldBtn.redraw();
         m_FLCBtn.redraw();
@@ -84,6 +87,7 @@ private:
         m_Info.title[0] = '\0';
         m_AirplaneTitleOut.value(m_Info.title);
         m_Info.ap_airspeed = 0;
+        m_Info.ap_auto_throttle = 0;
         m_Info.ap_alt_lock_var = 0;
         m_Info.ap_heading_lock_dir = 0;
         m_Info.ap_vertical_speed = 0;
@@ -92,6 +96,7 @@ private:
 
         m_AutopilotBtn.color(FL_BACKGROUND_COLOR);
         m_AirspeedHoldBtn.color(FL_BACKGROUND_COLOR);
+        m_AutoThrottleBtn.color(FL_BACKGROUND_COLOR);
         m_AltitudeLockBtn.color(FL_BACKGROUND_COLOR);
         m_ApproachHoldBtn.color(FL_BACKGROUND_COLOR);
         m_FLCBtn.color(FL_BACKGROUND_COLOR);
@@ -117,6 +122,7 @@ private:
         m_ConnectBtn.redraw();
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
+        m_AutoThrottleBtn.redraw();
         m_AltitudeLockBtn.redraw();
         m_ApproachHoldBtn.redraw();
         m_FLCBtn.redraw();
@@ -184,6 +190,12 @@ private:
         app->ToggleAutopilot();
     }
 
+    static inline void OnAutoThrottleClicked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->ToggleAutoThrottle();
+    }
+
     static inline void OnAltHoldClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
@@ -245,28 +257,29 @@ private:
     }
 public:
     Application() :
-        m_Window(670, 590, "Auto Nav"),
+        m_Window(670, 620, "Auto Nav"),
         m_AirplaneTitleOut(10, 10, 122, 22, "AirplaneTitle"),
         m_ConnectBtn(10, 40, 120, 22, "Connect"),
         m_AutopilotBtn(10, 70, 120, 22, "Autopilot"),
         m_AirspeedValCounter(10, 100, 122, 22, "Airspeed"),
         m_AirspeedHoldBtn(10, 130, 120, 22, "Airspeed hold"),
-        m_AltitudeLockBtn(10, 160, 120, 22, "Altitude locked"),
-        m_AltitudeCounter(10, 190, 122, 22, "Altitude"),
-        m_AltitudeManAdjOut(10, 220, 122, 22, "Altitude manually adjustable"),
-        m_ApproachHoldBtn(10, 250, 122, 22, "Approach hold"),
-        m_FLCBtn(10, 280, 122, 22, "FLC"),
-        m_FlightDirectorBtn(10, 310, 122, 22, "Flight Director"),
-        m_NavLockedBtn(10, 340, 122, 22, "Nav"),
-        m_HeadingLockedBtn(10, 370, 122, 22, "Heading locked"),
-        m_HeadingCounter(10, 400, 122, 22, "Heading"),
-        m_HeadingManAdjOut(10, 430, 122, 22, "Heading adjustable"),
-        m_VerticalSpeedHoldBtn(10, 460, 122, 22, "Vertical speed hold"),
-        m_VerticalSpeedCounter(10, 490, 122, 22, "Vertical speed"),
+        m_AutoThrottleBtn(10, 160, 120, 22, "Auto throttle"),
+        m_AltitudeLockBtn(10, 190, 120, 22, "Altitude locked"),
+        m_AltitudeCounter(10, 220, 122, 22, "Altitude"),
+        m_AltitudeManAdjOut(10, 250, 122, 22, "Altitude manually adjustable"),
+        m_ApproachHoldBtn(10, 252800, 122, 22, "Approach hold"),
+        m_FLCBtn(10, 310, 122, 22, "FLC"),
+        m_FlightDirectorBtn(10, 340, 122, 22, "Flight Director"),
+        m_NavLockedBtn(10, 370, 122, 22, "Nav"),
+        m_HeadingLockedBtn(10, 400, 122, 22, "Heading locked"),
+        m_HeadingCounter(10, 430, 122, 22, "Heading"),
+        m_HeadingManAdjOut(10, 460, 122, 22, "Heading adjustable"),
+        m_VerticalSpeedHoldBtn(10, 490, 122, 22, "Vertical speed hold"),
+        m_VerticalSpeedCounter(10, 520, 122, 22, "Vertical speed"),
         m_TestPositionBtn(375, 40, 100, 22, "Test position"),
         m_RefreshBtn(375, 70, 100, 22, "Refresh @refresh"),
-        m_WingLvlBtn(10, 520, 122, 22, "Wing Level"),
-        m_YawDamperBtn(10, 550, 122, 22, "Yaw Damper")
+        m_WingLvlBtn(10, 550, 122, 22, "Wing Level"),
+        m_YawDamperBtn(10, 580, 122, 22, "Yaw Damper")
     {
         Fl_RGB_Image i(sg_Icon_Data, sg_Icon_Width, sg_Icon_Height, sg_Icon_Channel, 0);
         m_Window.icon(&i);
@@ -286,6 +299,7 @@ public:
         m_AirspeedValCounter.align(Fl_Align(FL_ALIGN_RIGHT));
         m_AirspeedValCounter.callback(OnAirSpeedChanged, this);
         m_AirspeedHoldBtn.callback(OnAirspeedHoldClicked, this);
+        m_AutoThrottleBtn.callback(OnAutoThrottleClicked, this);
 
         m_AltitudeLockBtn.callback(OnAltHoldClicked, this);
         m_AltitudeCounter.minimum(-3000);
@@ -386,6 +400,10 @@ public:
         m_Socket.TransmitEvent(EVENT_AIRSPEED_HOLD);
     }
 
+    inline void ToggleAutoThrottle() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_AUTO_THROTTLE_ARM);
+    }
 
     inline void ToggleApproachHold() const noexcept
     {
