@@ -1,4 +1,6 @@
 #pragma once
+#include <thread>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Output.H>
@@ -218,18 +220,20 @@ public:
         SimConnect_SetDataOnSimObject(m_Socket.Handle(), DEFINITION_6, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(Init), &Init);
     }
 
-
     inline void Show() noexcept
     {
-        while (Fl::check())
+        Fl::lock();
+        while (Fl::wait())
         {
-            Fl::wait(1);
-            m_Socket.Dispatch(&m_Info);
-            if (m_Info.quit)
+            if (m_Socket.IsConnected())
             {
-                Connect();
+                m_Socket.Dispatch(&m_Info);
+                if (m_Info.quit)
+                {
+                    Connect();
+                }
+                UpdateUI();
             }
-            UpdateUI();
         }
     }
 };

@@ -1,9 +1,10 @@
 #pragma once
-
 #include <Windows.h>
 #include <strsafe.h>
 #include <winerror.h>
 #include <SimConnect.h>
+
+#include "Event.h"
 
 enum GROUP_ID {
     GROUP_6,
@@ -58,6 +59,9 @@ struct Struct1
 };
 
 
+
+
+
 class Socket
 {
 private:
@@ -66,11 +70,11 @@ private:
 private:
     bool Connect() noexcept
     {
-        if (FAILED(SimConnect_Open(&m_SimConnectHandle, "Auto Nav", NULL, 0, 0, 0)))
+        Events::Start();
+        if (FAILED(SimConnect_Open(&m_SimConnectHandle, "Auto Nav", NULL, 0, Events::Handles[0], 0)))
         {
             return false; // TODO add exlpanation code
         }
-
 
         // TODO: build wrapper function to handle errors for each
         HRESULT hr;
@@ -113,6 +117,7 @@ public:
     {
         if (m_Connected)
         {
+            Events::Stop();
             if (FAILED(SimConnect_Close(m_SimConnectHandle)))
                 return "Failed to disconnect from flight simulator";
             m_Connected = false;
