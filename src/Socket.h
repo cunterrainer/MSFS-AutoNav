@@ -18,13 +18,17 @@ enum INPUT_ID {
 
 
 enum EVENT_ID {
+    // Buttons
     EVENT_AUTOPILOT,
     EVENT_ALTITUDE_HOLD,
     EVENT_AIRSPEED_HOLD, // AP_AIRSPEED_HOLD
     EVENT_APPROACH_HOLD, // AP_APR_HOLD
     EVENT_FLIGHT_DIRECTOR, // TOGGLE_FLIGHT_DIRECTOR
     EVENT_HEADING_LOCKED, // AP_HDG_HOLD
-    EVENT_VERTICAL_SPEED_HOLD // AP_PANEL_VS_HOLD
+    EVENT_VERTICAL_SPEED_HOLD, // AP_PANEL_VS_HOLD
+
+    // Counters
+    EVENT_SET_ALTITUDE // AP_ALT_VAR_SET_ENGLISH in feet
 };
 
 enum DATA_DEFINE_ID {
@@ -111,6 +115,7 @@ private:
         MapClientEventToSimEvent(GROUP0, EVENT_FLIGHT_DIRECTOR, "TOGGLE_FLIGHT_DIRECTOR");
         MapClientEventToSimEvent(GROUP0, EVENT_HEADING_LOCKED, "AP_HDG_HOLD");
         MapClientEventToSimEvent(GROUP0, EVENT_VERTICAL_SPEED_HOLD, "AP_VS_HOLD");
+        MapClientEventToSimEvent(GROUP0, EVENT_SET_ALTITUDE, "AP_ALT_VAR_SET_ENGLISH");
 
         hr = SimConnect_SetNotificationGroupPriority(m_SimConnectHandle, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
         hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_1, DEFINITION_1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
@@ -158,9 +163,10 @@ public:
     }
 
 
-    void TransmitEvent(EVENT_ID event) const noexcept
+    void TransmitEvent(EVENT_ID event, DWORD data = 0) const noexcept
     {
-        SimConnect_TransmitClientEvent(m_SimConnectHandle, SIMCONNECT_OBJECT_ID_USER, event, 0, GROUP0, 0);
+        if (FAILED(SimConnect_TransmitClientEvent(m_SimConnectHandle, SIMCONNECT_OBJECT_ID_USER, event, data, GROUP0, 0)))
+            puts("Error: Failed to transmit event");
     }
 
 

@@ -86,6 +86,12 @@ private:
             c->value(0);
     }
 
+    static inline void OnAltitudeCounterChanged(Fl_Widget* w, void* a)
+    {
+        Application* app = (Application*)a;
+        app->SetAltitude();
+    }
+
     static inline void OnSetPositionClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
@@ -174,6 +180,7 @@ public:
         m_AltitudeCounter.step(100);
         m_AltitudeCounter.lstep(1000);
         m_AltitudeCounter.align(Fl_Align(FL_ALIGN_RIGHT));
+        m_AltitudeCounter.callback(OnAltitudeCounterChanged, this);
 
         m_AltitudeManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
         m_AltitudeManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
@@ -281,6 +288,12 @@ public:
     inline void ToggleVerticalSpeedHold() const noexcept
     {
         m_Socket.TransmitEvent(EVENT_VERTICAL_SPEED_HOLD);
+    }
+
+
+    inline void SetAltitude() const noexcept
+    {
+        m_Socket.TransmitEvent(EVENT_SET_ALTITUDE, static_cast<DWORD>(m_AltitudeCounter.value()));
     }
 
 
