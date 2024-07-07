@@ -68,6 +68,8 @@ class Socket
 private:
     HANDLE m_SimConnectHandle;
     bool m_Connected = false;
+public:
+    bool ShouldUpdate = false;
 private:
     bool Connect() noexcept
     {
@@ -177,6 +179,26 @@ public:
 
         switch (pData->dwID)
         {
+        case SIMCONNECT_RECV_ID_EVENT:
+        {
+            SIMCONNECT_RECV_EVENT* evt = (SIMCONNECT_RECV_EVENT*)pData;
+
+            switch (evt->uEventID)
+            {
+            case EVENT_AUTOPILOT:
+            case EVENT_ALTITUDE_HOLD:
+            case EVENT_AIRSPEED_HOLD:
+            case EVENT_APPROACH_HOLD:
+            case EVENT_FLIGHT_DIRECTOR:
+            case EVENT_HEADING_LOCKED:
+            case EVENT_VERTICAL_SPEED_HOLD:
+                ShouldUpdate = true;
+                break;
+            default:
+                break;
+            }
+            break;
+        }
         case SIMCONNECT_RECV_ID_SIMOBJECT_DATA:
         {
             SIMCONNECT_RECV_SIMOBJECT_DATA* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA*)pData;
@@ -238,7 +260,6 @@ public:
             break;
         }
 
-        // TODO make quit when sim exits
         case SIMCONNECT_RECV_ID_QUIT:
         {
             s->quit = true;

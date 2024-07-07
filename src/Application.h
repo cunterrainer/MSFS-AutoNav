@@ -301,8 +301,9 @@ public:
     inline void Show() noexcept
     {
         Fl::lock();
-        while (Fl::wait())
+        while (m_Socket.ShouldUpdate || Fl::wait())
         {
+            m_Socket.ShouldUpdate = false;
             if (m_Socket.IsConnected())
             {
                 m_Socket.Dispatch(&m_Info);
