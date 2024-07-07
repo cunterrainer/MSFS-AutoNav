@@ -18,7 +18,6 @@ enum INPUT_ID {
 
 
 enum EVENT_ID {
-    EVENT_SIM_START,
     EVENT_AUTOPILOT,
     EVENT_ALTITUDE_HOLD,
     EVENT_AIRSPEED_HOLD, // AP_AIRSPEED_HOLD
@@ -171,105 +170,82 @@ public:
     {
         DWORD cbData;
         SIMCONNECT_RECV* pData;
-        HRESULT hr = SimConnect_GetNextDispatch(m_SimConnectHandle, &pData, &cbData);
+        if (FAILED(SimConnect_GetNextDispatch(m_SimConnectHandle, &pData, &cbData)))
+            return;
 
-        if (SUCCEEDED(hr))
+        switch (pData->dwID)
         {
-            switch (pData->dwID)
-            {
-            case SIMCONNECT_RECV_ID_EVENT:
-            {
-                SIMCONNECT_RECV_EVENT* evt = (SIMCONNECT_RECV_EVENT*)pData;
+        case SIMCONNECT_RECV_ID_SIMOBJECT_DATA:
+        {
+            SIMCONNECT_RECV_SIMOBJECT_DATA* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA*)pData;
 
-                switch (evt->uEventID)
+            switch (pObjData->dwRequestID)
+            {
+            case REQUEST_1:
+            {
+                //DWORD ObjectID = pObjData->dwObjectID;
+                Struct1* ps = (Struct1*)&pObjData->dwData;
+                if (SUCCEEDED(StringCbLengthA(&ps->title[0], sizeof(ps->title), NULL))) // security check
                 {
+                    std::strcpy(s->title, ps->title);
+                    s->kohlsmann = ps->kohlsmann;
+                    s->altitude = ps->altitude;
+                    s->latitude = ps->latitude;
+                    s->longitude = ps->longitude;
+                    s->ap = ps->ap;
+                    s->ap_airspeed = ps->ap_airspeed;
+                    s->ap_airspeed_hold = ps->ap_airspeed_hold;
+                    s->ap_alt_lock = ps->ap_alt_lock;
+                    s->ap_alt_lock_var = ps->ap_alt_lock_var;
+                    s->ap_alt_manually_adjustable = ps->ap_alt_manually_adjustable;
+                    s->ap_approach_captured = ps->ap_approach_captured;
+                    s->ap_flight_director = ps->ap_flight_director;
+                    s->ap_heading_lock = ps->ap_heading_lock;
+                    s->ap_heading_lock_dir = ps->ap_heading_lock_dir;
+                    s->ap_heading_manually_adjustable = ps->ap_heading_manually_adjustable;
+                    s->ap_vertical_hold = ps->ap_vertical_hold;
+                    s->ap_vertical_speed = ps->ap_vertical_speed;
+                    s->updated = true;
 
-                case EVENT_SIM_START: // Now the sim is running, request information on the user aircraft
-                case EVENT_AUTOPILOT:
-                case EVENT_AIRSPEED_HOLD:
-                case EVENT_ALTITUDE_HOLD:
-                case EVENT_FLIGHT_DIRECTOR:
-                case EVENT_HEADING_LOCKED:
-                case EVENT_VERTICAL_SPEED_HOLD:
-                    //hr = SimConnect_RequestDataOnSimObjectType(m_SimConnectHandle, REQUEST_1, DEFINITION_1, 0, SIMCONNECT_SIMOBJECT_TYPE_USER);
-                    break;
-                default:
-                    break;
+
+                    //printf("\nObjectID=%d  Title=\"%s\"\nLat=%f  Lon=%f  Alt=%f  Kohlsman=%.2f\n", ObjectID, ps->title, ps->latitude, ps->longitude, ps->altitude, ps->kohlsmann);
+
+                    printf("Autopilot: %.0lf\n", ps->ap);
+                    printf("Airspeed: %.2lf\n", ps->ap_airspeed);
+                    printf("Airspeed hold: %.0lf\n", ps->ap_airspeed_hold);
+                    printf("Altitude locked: %.0lf\n", ps->ap_alt_lock);
+                    printf("Altitude: %.2lf\n", ps->ap_alt_lock_var);
+                    printf("Altitude manually adj: %.0lf\n", ps->ap_alt_manually_adjustable);
+
+                    printf("Approach captured: %.0lf\n", ps->ap_approach_captured);
+                    printf("Flight Director: %.0lf\n", ps->ap_flight_director);
+                    printf("Heading direction: %.2lf\n", ps->ap_heading_lock_dir);
+
+                    printf("Heading adj: %.0lf\n", ps->ap_heading_manually_adjustable);
+                    printf("Vertical speed hold: %.0lf\n", ps->ap_vertical_hold);
+                    printf("Vertical Speed: %.0lf\n", ps->ap_vertical_speed);
+
+                    printf("\n\n\n");
                 }
-                break;
-            }
-            case SIMCONNECT_RECV_ID_SIMOBJECT_DATA:
-            {
-                SIMCONNECT_RECV_SIMOBJECT_DATA* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA*)pData;
-
-                switch (pObjData->dwRequestID)
-                {
-                case REQUEST_1:
-                {
-                    //DWORD ObjectID = pObjData->dwObjectID;
-                    Struct1* ps = (Struct1*)&pObjData->dwData;
-                    if (SUCCEEDED(StringCbLengthA(&ps->title[0], sizeof(ps->title), NULL))) // security check
-                    {
-                        std::strcpy(s->title, ps->title);
-                        s->kohlsmann = ps->kohlsmann;
-                        s->altitude = ps->altitude;
-                        s->latitude = ps->latitude;
-                        s->longitude = ps->longitude;
-                        s->ap = ps->ap;
-                        s->ap_airspeed = ps->ap_airspeed;
-                        s->ap_airspeed_hold = ps->ap_airspeed_hold;
-                        s->ap_alt_lock = ps->ap_alt_lock;
-                        s->ap_alt_lock_var = ps->ap_alt_lock_var;
-                        s->ap_alt_manually_adjustable = ps->ap_alt_manually_adjustable;
-                        s->ap_approach_captured = ps->ap_approach_captured;
-                        s->ap_flight_director = ps->ap_flight_director;
-                        s->ap_heading_lock = ps->ap_heading_lock;
-                        s->ap_heading_lock_dir = ps->ap_heading_lock_dir;
-                        s->ap_heading_manually_adjustable = ps->ap_heading_manually_adjustable;
-                        s->ap_vertical_hold = ps->ap_vertical_hold;
-                        s->ap_vertical_speed = ps->ap_vertical_speed;
-                        s->updated = true;
-
-
-                        //printf("\nObjectID=%d  Title=\"%s\"\nLat=%f  Lon=%f  Alt=%f  Kohlsman=%.2f\n", ObjectID, ps->title, ps->latitude, ps->longitude, ps->altitude, ps->kohlsmann);
-
-                        printf("Autopilot: %.0lf\n", ps->ap);
-                        printf("Airspeed: %.2lf\n", ps->ap_airspeed);
-                        printf("Airspeed hold: %.0lf\n", ps->ap_airspeed_hold);
-                        printf("Altitude locked: %.0lf\n", ps->ap_alt_lock);
-                        printf("Altitude: %.2lf\n", ps->ap_alt_lock_var);
-                        printf("Altitude manually adj: %.0lf\n", ps->ap_alt_manually_adjustable);
-
-                        printf("Approach captured: %.0lf\n", ps->ap_approach_captured);
-                        printf("Flight Director: %.0lf\n", ps->ap_flight_director);
-                        printf("Heading direction: %.2lf\n", ps->ap_heading_lock_dir);
-
-                        printf("Heading adj: %.0lf\n", ps->ap_heading_manually_adjustable);
-                        printf("Vertical speed hold: %.0lf\n", ps->ap_vertical_hold);
-                        printf("Vertical Speed: %.0lf\n", ps->ap_vertical_speed);
-
-                        printf("\n\n\n");
-                    }
-                    break;
-                }
-
-                default:
-                    break;
-                }
-                break;
-            }
-
-            // TODO make quit when sim exits
-            case SIMCONNECT_RECV_ID_QUIT:
-            {
-                s->quit = true;
                 break;
             }
 
             default:
-                printf("\nReceived:%d", pData->dwID);
                 break;
             }
+            break;
+        }
+
+        // TODO make quit when sim exits
+        case SIMCONNECT_RECV_ID_QUIT:
+        {
+            s->quit = true;
+            break;
+        }
+
+        default:
+            printf("\nReceived:%d", pData->dwID);
+            break;
         }
     }
 };
