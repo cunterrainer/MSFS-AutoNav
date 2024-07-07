@@ -15,7 +15,7 @@ class Application
 private:
     Fl_Double_Window m_Window;
 
-    Fl_Output m_AirplaneTitleOut;
+    Fl_Output  m_AirplaneTitleOut;
     Fl_Button  m_ConnectBtn;
     Fl_Button  m_AutopilotBtn;
     Fl_Counter m_AirspeedValCounter;
@@ -23,7 +23,7 @@ private:
     Fl_Button  m_AltitudeLockBtn;
     Fl_Counter m_AltitudeCounter;
     Fl_Output  m_AltitudeManAdjOut;
-    Fl_Button  M_ApproachHoldBtn;
+    Fl_Button  m_ApproachHoldBtn;
     Fl_Button  m_FLCBtn;
     Fl_Button  m_FlightDirectorBtn;
     Fl_Button  m_NavLockedBtn;
@@ -52,7 +52,7 @@ private:
         m_AltitudeLockBtn.color(m_Info.ap_alt_lock != 0.0 ? FL_GREEN : FL_RED);
         m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
         m_AltitudeManAdjOut.value(m_Info.ap_alt_manually_adjustable != 0.0 ? "True" : "False");
-        M_ApproachHoldBtn.color(m_Info.ap_approach_hold != 0.0 ? FL_GREEN : FL_RED);
+        m_ApproachHoldBtn.color(m_Info.ap_approach_hold != 0.0 ? FL_GREEN : FL_RED);
         m_FLCBtn.color(m_Info.ap_flight_level_change != 0.0 ? FL_GREEN : FL_RED);
         m_FlightDirectorBtn.color(m_Info.ap_flight_director != 0.0 ? FL_GREEN : FL_RED);
         m_NavLockedBtn.color(m_Info.ap_nav_lock != 0.0 ? FL_GREEN : FL_RED);
@@ -67,7 +67,7 @@ private:
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
         m_AltitudeLockBtn.redraw();
-        M_ApproachHoldBtn.redraw();
+        m_ApproachHoldBtn.redraw();
         m_FLCBtn.redraw();
         m_FlightDirectorBtn.redraw();
         m_NavLockedBtn.redraw();
@@ -93,7 +93,7 @@ private:
         m_AutopilotBtn.color(FL_BACKGROUND_COLOR);
         m_AirspeedHoldBtn.color(FL_BACKGROUND_COLOR);
         m_AltitudeLockBtn.color(FL_BACKGROUND_COLOR);
-        M_ApproachHoldBtn.color(FL_BACKGROUND_COLOR);
+        m_ApproachHoldBtn.color(FL_BACKGROUND_COLOR);
         m_FLCBtn.color(FL_BACKGROUND_COLOR);
         m_FlightDirectorBtn.color(FL_BACKGROUND_COLOR);
         m_NavLockedBtn.color(FL_BACKGROUND_COLOR);
@@ -118,7 +118,7 @@ private:
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
         m_AltitudeLockBtn.redraw();
-        M_ApproachHoldBtn.redraw();
+        m_ApproachHoldBtn.redraw();
         m_FLCBtn.redraw();
         m_FlightDirectorBtn.redraw();
         m_NavLockedBtn.redraw();
@@ -248,7 +248,7 @@ public:
         m_AltitudeLockBtn(10, 160, 120, 22, "Altitude locked"),
         m_AltitudeCounter(10, 190, 122, 22, "Altitude"),
         m_AltitudeManAdjOut(10, 220, 122, 22, "Altitude manually adjustable"),
-        M_ApproachHoldBtn(10, 250, 122, 22, "Approach hold"),
+        m_ApproachHoldBtn(10, 250, 122, 22, "Approach hold"),
         m_FLCBtn(10, 280, 122, 22, "FLC"),
         m_FlightDirectorBtn(10, 310, 122, 22, "Flight Director"),
         m_NavLockedBtn(10, 340, 122, 22, "Nav"),
@@ -307,6 +307,7 @@ public:
         m_VerticalSpeedCounter.lstep(1000);
         m_VerticalSpeedCounter.callback(OnVerticalSpeedChanged, this);
         m_FLCBtn.callback(OnFLCClicked, this);
+        m_ApproachHoldBtn.callback(OnApproachHoldClicked, this);
         m_FlightDirectorBtn.callback(OnFlightDirectorClicked, this);
         m_NavLockedBtn.callback(OnNavLockedClicked, this);
         m_VerticalSpeedHoldBtn.callback(OnVerticalSpeedHoldClicked, this);
