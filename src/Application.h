@@ -47,8 +47,19 @@ private:
         if (!m_Info.updated)
             return;
 
+        if (m_Info.ap_available == 0.0)
+        {
+            m_AutopilotBtn.deactivate();
+            m_AutopilotBtn.tooltip("No autopilot available");
+            m_AutopilotBtn.color(FL_BACKGROUND_COLOR);
+        }
+        else
+        {
+            m_AutopilotBtn.tooltip("Toggle Autopilot");
+            m_AutopilotBtn.color(m_Info.ap != 0.0 ? FL_GREEN : FL_RED);
+        }
+
         m_AirplaneTitleOut.value(m_Info.title);
-        m_AutopilotBtn.color(m_Info.ap != 0.0 ? FL_GREEN : FL_RED);
         m_AirspeedValCounter.value(m_Info.ap_airspeed);
         m_AirspeedHoldBtn.color(m_Info.ap_airspeed_hold != 0.0 ? FL_GREEN : FL_RED);
         m_AutoThrottleBtn.color(m_Info.ap_auto_throttle != 0.0 ? FL_GREEN : FL_RED);
@@ -123,6 +134,7 @@ private:
 
         m_HeadingCounter.tooltip("Set heading");
         m_AltitudeCounter.tooltip("Set altitude");
+        m_AutopilotBtn.tooltip("Toggle Autopilot");
 
         m_ConnectBtn.redraw();
         m_AutopilotBtn.redraw();
@@ -296,7 +308,6 @@ public:
         m_AltitudeCounter.align(Fl_Align(FL_ALIGN_TOP));
         m_AltitudeCounter.callback(OnAltitudeCounterChanged, this);
 
-        m_HeadingCounter.tooltip("Adjust the current heading");
         m_HeadingCounter.range(-1, 360);
         m_HeadingCounter.step(1);
         m_HeadingCounter.lstep(10);

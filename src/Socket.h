@@ -54,6 +54,7 @@ struct Struct1
 {
     char   title[256];
     double ap;
+    double ap_available;
     double ap_airspeed;
     double ap_airspeed_hold;
     double ap_auto_throttle;
@@ -99,6 +100,7 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_6, "Initial Position", NULL, SIMCONNECT_DATATYPE_INITPOSITION);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "Title", NULL, SIMCONNECT_DATATYPE_STRING256);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT MASTER", NULL);
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT AVAILABLE", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD VAR", "knots");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT AIRSPEED HOLD", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT THROTTLE ARM", NULL);
@@ -248,6 +250,7 @@ public:
                 {
                     std::strcpy(s->title, ps->title);
                     s->ap = ps->ap;
+                    s->ap_available = ps->ap_available;
                     s->ap_airspeed = ps->ap_airspeed;
                     s->ap_airspeed_hold = ps->ap_airspeed_hold;
                     s->ap_auto_throttle = ps->ap_auto_throttle;
