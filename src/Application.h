@@ -186,6 +186,13 @@ private:
         m_YawDamperBtn.redraw();
     }
 private:
+    static inline void OnCloseWindow(Fl_Widget* w, void* a)
+    {
+        if (Fl::event() == FL_SHORTCUT && Fl::event_key() == FL_Escape)
+            return; // ignore Escape
+        Fl::atclose((Fl_Double_Window*)w, a);
+    }
+
     static inline void OnConnectClicked(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
@@ -318,6 +325,7 @@ public:
         OS::use_dark_theme();
         Fl_RGB_Image i(sg_Icon_Data, sg_Icon_Width, sg_Icon_Height, sg_Icon_Channel, 0);
         m_Window.icon(&i);
+        m_Window.callback(OnCloseWindow, nullptr);
 
         m_AirplaneTitleOut.box(FL_FLAT_BOX);
         m_AirplaneTitleOut.color(FL_BACKGROUND_COLOR);
