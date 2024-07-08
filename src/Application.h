@@ -71,6 +71,7 @@ private:
         }
         else
         {
+            m_AutopilotBtn.activate();
             m_AutopilotBtn.tooltip("Toggle Autopilot");
             m_AutopilotBtn.color(m_Info.ap != 0.0 ? FL_GREEN : FL_RED);
         }
@@ -169,6 +170,8 @@ private:
         m_HeadingCounter.tooltip("Set heading");
         m_AltitudeCounter.tooltip("Set altitude");
         m_AutopilotBtn.tooltip("Toggle Autopilot");
+
+        m_AutopilotBtn.activate();
 
         m_ConnectBtn.redraw();
         m_AutopilotBtn.redraw();
