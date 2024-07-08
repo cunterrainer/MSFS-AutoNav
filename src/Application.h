@@ -376,7 +376,7 @@ public:
 
             m_ConnectBtn.color(FL_RED);
             m_ConnectBtn.label("Connect");
-            ResetColors();
+            ResetUI();
             if (m_Info.quit)
             {
                 Fl::error("Quit microsoft flight simulator, lost connection");
