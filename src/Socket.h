@@ -182,10 +182,11 @@ public:
     }
 
 
-    void TransmitEvent(EVENT_ID event, DWORD data = 0) const noexcept
+    bool TransmitEvent(EVENT_ID event, DWORD data) const noexcept
     {
         if (FAILED(SimConnect_TransmitClientEvent(m_SimConnectHandle, SIMCONNECT_OBJECT_ID_USER, event, data, GROUP0, 0)))
-            puts("Error: Failed to transmit event");
+            return false;
+        return true;
     }
 
 

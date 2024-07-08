@@ -392,97 +392,104 @@ public:
     }
 
 
+    inline void TransmitEvent(EVENT_ID event, DWORD data = 0) const noexcept
+    {
+        if (!m_Socket.TransmitEvent(event, data))
+            Fl::error("Failed to trasmit event to MSFS, state hasn't been changed!");
+    }
+
+
     inline void ToggleAutopilot() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_AUTOPILOT);
+        TransmitEvent(EVENT_AUTOPILOT);
     }
 
 
     inline void ToggleAltHold() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_ALTITUDE_HOLD);
+        TransmitEvent(EVENT_ALTITUDE_HOLD);
     }
 
 
     inline void ToggleAirspeedHold() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_AIRSPEED_HOLD);
+        TransmitEvent(EVENT_AIRSPEED_HOLD);
     }
 
     inline void ToggleAutoThrottle() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_AUTO_THROTTLE_ARM);
+        TransmitEvent(EVENT_AUTO_THROTTLE_ARM);
     }
 
     inline void ToggleApproachHold() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_APPROACH_HOLD);
+        TransmitEvent(EVENT_APPROACH_HOLD);
     }
 
 
     inline void ToggleFLC() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_FLC_HOLD);
+        TransmitEvent(EVENT_FLC_HOLD);
     }
 
 
     inline void ToggleFlightDirector() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_FLIGHT_DIRECTOR);
+        TransmitEvent(EVENT_FLIGHT_DIRECTOR);
     }
 
 
     inline void ToggleNavLocked() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_NAV_LOCKED);
+        TransmitEvent(EVENT_NAV_LOCKED);
     }
 
 
     inline void ToggleHeadingLocked() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_HEADING_LOCKED);
+        TransmitEvent(EVENT_HEADING_LOCKED);
     }
 
 
     inline void ToggleVerticalSpeedHold() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_VERTICAL_SPEED_HOLD);
+        TransmitEvent(EVENT_VERTICAL_SPEED_HOLD);
     }
 
 
     inline void ToggleWingLvl() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_WING_LVL_HOLD);
+        TransmitEvent(EVENT_WING_LVL_HOLD);
     }
 
 
     inline void ToggleYawDamper() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_YAW_DAMPER_HOLD);
+        TransmitEvent(EVENT_YAW_DAMPER_HOLD);
     }
 
 
     inline void SetHeading() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_SET_HEADING, static_cast<DWORD>(m_HeadingCounter.value()));
+        TransmitEvent(EVENT_SET_HEADING, static_cast<DWORD>(m_HeadingCounter.value()));
     }
 
 
     inline void SetAltitude() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_SET_ALTITUDE, static_cast<DWORD>(m_AltitudeCounter.value()));
+        TransmitEvent(EVENT_SET_ALTITUDE, static_cast<DWORD>(m_AltitudeCounter.value()));
     }
 
 
     inline void SetAirSpeed() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_SET_AIRSPEED, static_cast<DWORD>(m_AirspeedValCounter.value()));
+        TransmitEvent(EVENT_SET_AIRSPEED, static_cast<DWORD>(m_AirspeedValCounter.value()));
     }
 
 
     inline void SetHeadingIndex() const noexcept
     {
-        m_Socket.TransmitEvent(EVENT_SET_HEADING_IDX, static_cast<DWORD>(m_HeadingSlotChoice.value() + 1));
+        TransmitEvent(EVENT_SET_HEADING_IDX, static_cast<DWORD>(m_HeadingSlotChoice.value() + 1));
     }
 
 
@@ -493,7 +500,7 @@ public:
             ToggleVerticalSpeedHold();
         }
 
-        m_Socket.TransmitEvent(EVENT_SET_VERTICAL_SPEED, static_cast<DWORD>(m_VerticalSpeedCounter.value()));
+        TransmitEvent(EVENT_SET_VERTICAL_SPEED, static_cast<DWORD>(m_VerticalSpeedCounter.value()));
     }
 
 
