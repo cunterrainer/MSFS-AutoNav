@@ -19,9 +19,9 @@ private:
     Fl_Output  m_AirplaneTitleOut     = Fl_Output (  0,  10, 600, 22, "AirplaneTitle");
     Fl_Button  m_ConnectBtn           = Fl_Button ( 20,  58, 115, 70, "Connect");
     Fl_Button  m_AutopilotBtn         = Fl_Button (168,  58, 115, 70, "AP");
-    Fl_Counter m_AirspeedValCounter   = Fl_Counter(20, 164, 115, 25, "Airspeed");
-    Fl_Button  m_AirspeedHoldBtn      = Fl_Button (20, 211, 115, 30, "SPD");
-    Fl_Button  m_AutoThrottleBtn      = Fl_Button (20, 251, 115, 30, "A/THR");
+    Fl_Counter m_AirspeedValCounter   = Fl_Counter( 20, 164, 115, 25, "Airspeed");
+    Fl_Button  m_AirspeedHoldBtn      = Fl_Button ( 20, 211, 115, 30, "SPD");
+    Fl_Button  m_AutoThrottleBtn      = Fl_Button ( 20, 251, 115, 30, "A/THR");
     Fl_Button  m_AltitudeLockBtn      = Fl_Button (316, 211, 115, 70, "ALT");
     Fl_Counter m_AltitudeCounter      = Fl_Counter(316, 164, 115, 25, "Altitude");
     Fl_Button  m_ApproachHoldBtn      = Fl_Button (316, 301, 115, 70, "APPR");
@@ -35,7 +35,7 @@ private:
     Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
     Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
     Fl_Button  m_WingLvlBtn           = Fl_Button (465, 301, 115, 70, "Wing LVL");
-    Fl_Button  m_YawDamperBtn         = Fl_Button (22, 301, 115, 70, "Yaw Damper");
+    Fl_Button  m_YawDamperBtn         = Fl_Button ( 22, 301, 115, 70, "Yaw Damper");
     Fl_Choice  m_HeadingSlotChoice    = Fl_Choice (168, 217, 115, 22, "Heading slot");
 
     Socket m_Socket;
@@ -87,7 +87,7 @@ private:
     }
 
 
-    void ResetColors()
+    void ResetUI()
     {
         m_Info.title[0] = '\0';
         m_AirplaneTitleOut.value(m_Info.title);
