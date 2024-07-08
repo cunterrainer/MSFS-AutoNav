@@ -40,7 +40,7 @@ project "AutoNav"
     buildoptions { "/sdl" }
     disablewarnings "4706"
     defines "_CRT_SECURE_NO_WARNINGS"
-    ignoredefaultlibraries "LIBCMT"
+    ignoredefaultlibraries { "LIBCMT", "LIBCMTD" }
 
     files {
         "src/**.cpp",
