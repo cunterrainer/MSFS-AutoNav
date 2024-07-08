@@ -1,22 +1,23 @@
 #pragma once
 #include <FL/Fl.H>
-#include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Counter.H>
+#include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Value_Output.H>
 #include <FL/Fl_Double_Window.H>
 
 #include "Icon.h"
 #include "Socket.h"
+#include "CenteredOutput.h"
 
 class Application
 {
 private:
     Fl_Double_Window m_Window = Fl_Double_Window(600, 520, "Auto Nav");
 
-    Fl_Output  m_AirplaneTitleOut     = Fl_Output (  0,  10, 600, 22, "AirplaneTitle");
+    CenteredOutput m_AirplaneTitleOut = CenteredOutput(0, 14, 600, 30, "AirplaneTitle");
     Fl_Button  m_ConnectBtn           = Fl_Button ( 20,  58, 115, 70, "Connect");
     Fl_Button  m_AutopilotBtn         = Fl_Button (168,  58, 115, 70, "AP");
     Fl_Counter m_AirspeedValCounter   = Fl_Counter( 20, 164, 115, 25, "Airspeed");
