@@ -1,5 +1,9 @@
 # AutoNav
-A program to controll the auto pilot in microsoft flight simulator 2020 using a unified interface
+A program to controll the auto pilot in microsoft flight simulator 2020 using a unified interface. This program does **NOT** provide an autopilot for aircrafts that do not have those, thus some features may not be available on all aircrafts.
+
+Program             |  Cockpit PFD
+:-------------------------:|:-------------------------:
+![](./docs/program.PNG)  |  ![](./docs/cockpit.PNG)
 
 # Build
 ## Prerequisites
