@@ -186,6 +186,8 @@ public:
 
     bool TransmitEvent(EVENT_ID event, DWORD data) const noexcept
     {
+        if (!m_Connected)
+            return true;
         if (FAILED(SimConnect_TransmitClientEvent(m_SimConnectHandle, SIMCONNECT_OBJECT_ID_USER, event, data, GROUP0, 0)))
             return false;
         return true;
