@@ -10,7 +10,7 @@ cwd = os.getcwd() -- get current working directory
 targetdir(cwd .. outputdir .. "bin")
 objdir(cwd .. outputdir .. "bin-int")
 
-platforms { "x64", "x86" }
+platforms "x64"
 filter { "configurations:Debug" }
     runtime "Debug"
     symbols "on"
