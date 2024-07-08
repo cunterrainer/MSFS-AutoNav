@@ -24,21 +24,19 @@ private:
     Fl_Button  m_AutoThrottleBtn      = Fl_Button (20, 251, 115, 30, "A/THR");
     Fl_Button  m_AltitudeLockBtn      = Fl_Button (316, 211, 115, 70, "ALT");
     Fl_Counter m_AltitudeCounter      = Fl_Counter(316, 164, 115, 25, "Altitude");
-    Fl_Output  m_AltitudeManAdjOut    = Fl_Output (15, 480, 122, 22, "Altitude manually adjustable");
     Fl_Button  m_ApproachHoldBtn      = Fl_Button (316, 301, 115, 70, "APPR");
     Fl_Button  m_FLCBtn               = Fl_Button (465,  58, 115, 70, "FLC");
     Fl_Button  m_FlightDirectorBtn    = Fl_Button (316,  58, 115, 70, "FD");
     Fl_Button  m_NavLockedBtn         = Fl_Button (170, 301, 115, 70, "NAV");
     Fl_Button  m_HeadingLockedBtn     = Fl_Button (168, 251, 115, 30, "HDG");
     Fl_Counter m_HeadingCounter       = Fl_Counter(168, 164, 115, 25, "Heading");
-    Fl_Output  m_HeadingManAdjOut     = Fl_Output (46, 397, 122, 22, "Heading adjustable");
     Fl_Button  m_VerticalSpeedHoldBtn = Fl_Button (465, 211, 115, 70, "V/S");
     Fl_Counter m_VerticalSpeedCounter = Fl_Counter(465, 164, 115, 25, "Vertical speed");
     Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
     Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
     Fl_Button  m_WingLvlBtn           = Fl_Button (465, 301, 115, 70, "Wing LVL");
     Fl_Button  m_YawDamperBtn         = Fl_Button (22, 301, 115, 70, "Yaw Damper");
-    Fl_Choice  m_HeadingSlotChoice    = Fl_Choice (168, 217, 115, 22, "Heading index");
+    Fl_Choice  m_HeadingSlotChoice    = Fl_Choice (168, 217, 115, 22, "Heading slot");
 
     Socket m_Socket;
     Struct1 m_Info;
@@ -55,19 +53,23 @@ private:
         m_AutoThrottleBtn.color(m_Info.ap_auto_throttle != 0.0 ? FL_GREEN : FL_RED);
         m_AltitudeLockBtn.color(m_Info.ap_alt_lock != 0.0 ? FL_GREEN : FL_RED);
         m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
-        m_AltitudeManAdjOut.value(m_Info.ap_alt_manually_adjustable != 0.0 ? "True" : "False");
         m_ApproachHoldBtn.color(m_Info.ap_approach_hold != 0.0 ? FL_GREEN : FL_RED);
         m_FLCBtn.color(m_Info.ap_flight_level_change != 0.0 ? FL_GREEN : FL_RED);
         m_FlightDirectorBtn.color(m_Info.ap_flight_director != 0.0 ? FL_GREEN : FL_RED);
         m_NavLockedBtn.color(m_Info.ap_nav_lock != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingLockedBtn.color(m_Info.ap_heading_lock != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingCounter.value(m_Info.ap_heading_lock_dir);
-        m_HeadingManAdjOut.value(m_Info.ap_heading_manually_adjustable != 0.0 ? "True" : "False");
         m_VerticalSpeedHoldBtn.color(m_Info.ap_vertical_hold != 0.0 ? FL_GREEN : FL_RED);
         m_VerticalSpeedCounter.value(m_Info.ap_vertical_speed);
         m_WingLvlBtn.color(m_Info.ap_wing_lvl != 0.0 ? FL_GREEN : FL_RED);
         m_YawDamperBtn.color(m_Info.ap_yaw_damper != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingSlotChoice.value((int)m_Info.ap_heading_idx - 1);
+
+        if (m_Info.ap_heading_manually_adjustable == 0.0)
+            m_HeadingCounter.tooltip("Set heading (not adjustable for this aircraft)");
+
+        if (m_Info.ap_alt_manually_adjustable == 0.0)
+            m_HeadingCounter.tooltip("Set altitude (not adjustable for this aircraft)");
 
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
@@ -113,15 +115,13 @@ private:
         m_WingLvlBtn.color(FL_BACKGROUND_COLOR);
         m_YawDamperBtn.color(FL_BACKGROUND_COLOR);
 
-
         m_AirspeedValCounter.value(m_Info.ap_airspeed);
         m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
         m_VerticalSpeedCounter.value(m_Info.ap_vertical_speed);
         m_HeadingCounter.value(m_Info.ap_heading_lock_dir);
 
-
-        m_AltitudeManAdjOut.value("");
-        m_HeadingManAdjOut.value("");
+        m_HeadingCounter.tooltip("Set heading");
+        m_AltitudeCounter.tooltip("Set altitude");
 
         m_ConnectBtn.redraw();
         m_AutopilotBtn.redraw();
@@ -295,9 +295,6 @@ public:
         m_AltitudeCounter.align(Fl_Align(FL_ALIGN_TOP));
         m_AltitudeCounter.callback(OnAltitudeCounterChanged, this);
 
-        m_AltitudeManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
-        m_AltitudeManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
-
         m_HeadingCounter.tooltip("Adjust the current heading");
         m_HeadingCounter.range(-1, 360);
         m_HeadingCounter.step(1);
@@ -305,8 +302,6 @@ public:
         m_HeadingCounter.value(0);
         m_HeadingCounter.align(Fl_Align(FL_ALIGN_TOP));
         m_HeadingCounter.callback(OnHeadingCounterChanged, this);
-        m_HeadingManAdjOut.align(Fl_Align(FL_ALIGN_RIGHT));
-        m_HeadingManAdjOut.cursor_color(FL_BACKGROUND2_COLOR);
         m_HeadingLockedBtn.callback(OnHeadingLockedClicked, this);
 
         m_VerticalSpeedCounter.align(Fl_Align(FL_ALIGN_TOP));
@@ -330,6 +325,27 @@ public:
 
         m_RefreshBtn.callback(OnRefreshClicked, this);
         m_TestPositionBtn.callback(OnSetPositionClicked, this);
+
+        m_ConnectBtn.tooltip("Connect to MSFS");
+        m_AutopilotBtn.tooltip("Toggle Autopilot");
+        m_AirspeedValCounter.tooltip("Set airspeed");
+        m_AirspeedHoldBtn.tooltip("Toggle airspeed hold mode");
+        m_AutoThrottleBtn.tooltip("Toggle autothrottle");
+        m_AltitudeCounter.tooltip("Set altitude");
+        m_AltitudeLockBtn.tooltip("Toggle hold altitude");
+        m_ApproachHoldBtn.tooltip("Toggle approach mode");
+        m_FLCBtn.tooltip("Toggle FLC (Flight level control)");
+        m_FlightDirectorBtn.tooltip("Toggle flight director");
+        m_NavLockedBtn.tooltip("Toggle nav mode (following gps)");
+        m_HeadingCounter.tooltip("Set heading");
+        m_HeadingLockedBtn.tooltip("Toggle heading (following heading)");
+        m_VerticalSpeedCounter.tooltip("Set vertical speed");
+        m_VerticalSpeedHoldBtn.tooltip("Toggle vertical speed");
+        m_TestPositionBtn.tooltip("Teleport to a test position");
+        m_RefreshBtn.tooltip("Refresh data from MSFS if out of sync");
+        m_WingLvlBtn.tooltip("Toggle wing level mode");
+        m_YawDamperBtn.tooltip("Toggle yam damper");
+        m_HeadingSlotChoice.tooltip("Select heading slot (Try if NAV mode doesn't follow e.g. a320)");
 
         m_Window.resizable(m_Window);
         m_Window.end();
