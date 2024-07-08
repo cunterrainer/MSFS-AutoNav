@@ -226,6 +226,7 @@ public:
             case EVENT_SET_AIRSPEED:
             case EVENT_SET_HEADING:
             case EVENT_SET_VERTICAL_SPEED:
+            case EVENT_SET_HEADING_IDX:
                 ShouldUpdate = true;
                 break;
             default:
@@ -241,7 +242,6 @@ public:
             {
             case REQUEST_1:
             {
-                //DWORD ObjectID = pObjData->dwObjectID;
                 Struct1* ps = (Struct1*)&pObjData->dwData;
                 if (SUCCEEDED(StringCbLengthA(&ps->title[0], sizeof(ps->title), NULL))) // security check
                 {
@@ -266,47 +266,20 @@ public:
                     s->ap_yaw_damper = ps->ap_yaw_damper;
                     s->ap_heading_idx = ps->ap_heading_idx;
                     s->updated = true;
-
-
-                    //printf("\nObjectID=%d  Title=\"%s\"\nLat=%f  Lon=%f  Alt=%f  Kohlsman=%.2f\n", ObjectID, ps->title, ps->latitude, ps->longitude, ps->altitude, ps->kohlsmann);
-
-                    printf("Autopilot: %.0lf\n", ps->ap);
-                    printf("Airspeed: %.2lf\n", ps->ap_airspeed);
-                    printf("Airspeed hold: %.0lf\n", ps->ap_airspeed_hold);
-                    printf("Altitude locked: %.0lf\n", ps->ap_alt_lock);
-                    printf("Altitude: %.2lf\n", ps->ap_alt_lock_var);
-                    printf("Altitude manually adj: %.0lf\n", ps->ap_alt_manually_adjustable);
-
-                    printf("Approach captured: %.0lf\n", ps->ap_approach_hold);
-                    printf("FLC: %.0lf\n", ps->ap_flight_level_change);
-                    printf("Flight Director: %.0lf\n", ps->ap_flight_director);
-                    printf("Nav locked: %.0lf\n", ps->ap_nav_lock);
-                    printf("Heading locked: %.0lf\n", ps->ap_heading_lock);
-                    printf("Heading direction: %.2lf\n", ps->ap_heading_lock_dir);
-
-                    printf("Heading adj: %.0lf\n", ps->ap_heading_manually_adjustable);
-                    printf("Vertical speed hold: %.0lf\n", ps->ap_vertical_hold);
-                    printf("Vertical Speed: %.0lf\n", ps->ap_vertical_speed);
-
-                    printf("\n\n\n");
                 }
                 break;
             }
-
             default:
                 break;
             }
             break;
         }
-
         case SIMCONNECT_RECV_ID_QUIT:
         {
             s->quit = true;
             break;
         }
-
         default:
-            printf("\nReceived:%d", pData->dwID);
             break;
         }
     }
