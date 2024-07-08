@@ -9,6 +9,7 @@
 #include <FL/Fl_Double_Window.H>
 
 #include "Icon.h"
+#include "Theme.h"
 #include "Socket.h"
 #include "CenteredOutput.h"
 
@@ -42,6 +43,21 @@ private:
     Socket m_Socket;
     Struct1 m_Info;
 private:
+    void SetButtonColor(Fl_Button& btn, double value) const noexcept
+    {
+        if (value == 0.0)
+        {
+            btn.color(FL_RED);
+            btn.labelcolor(FL_FOREGROUND_COLOR);
+        }
+        else
+        {
+            btn.color(FL_GREEN);
+            btn.labelcolor(FL_GRAY0);
+        }
+    }
+
+
     void UpdateUI()
     {
         if (!m_Info.updated)
@@ -59,22 +75,25 @@ private:
             m_AutopilotBtn.color(m_Info.ap != 0.0 ? FL_GREEN : FL_RED);
         }
 
+        SetButtonColor(m_AutopilotBtn, m_Info.ap);
+        SetButtonColor(m_AirspeedHoldBtn, m_Info.ap_airspeed_hold);
+        SetButtonColor(m_AutoThrottleBtn, m_Info.ap_auto_throttle);
+        SetButtonColor(m_AltitudeLockBtn, m_Info.ap_alt_lock);
+        SetButtonColor(m_ApproachHoldBtn, m_Info.ap_approach_hold);
+        SetButtonColor(m_FLCBtn, m_Info.ap_flight_level_change);
+        SetButtonColor(m_FlightDirectorBtn, m_Info.ap_flight_director);
+        SetButtonColor(m_NavLockedBtn, m_Info.ap_nav_lock);
+        SetButtonColor(m_HeadingLockedBtn, m_Info.ap_heading_lock);
+        SetButtonColor(m_VerticalSpeedHoldBtn, m_Info.ap_vertical_hold);
+        SetButtonColor(m_WingLvlBtn, m_Info.ap_wing_lvl);
+        SetButtonColor(m_YawDamperBtn, m_Info.ap_yaw_damper);
+
         m_AirplaneTitleOut.value(m_Info.title);
         m_AirspeedValCounter.value(m_Info.ap_airspeed);
-        m_AirspeedHoldBtn.color(m_Info.ap_airspeed_hold != 0.0 ? FL_GREEN : FL_RED);
-        m_AutoThrottleBtn.color(m_Info.ap_auto_throttle != 0.0 ? FL_GREEN : FL_RED);
-        m_AltitudeLockBtn.color(m_Info.ap_alt_lock != 0.0 ? FL_GREEN : FL_RED);
         m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
-        m_ApproachHoldBtn.color(m_Info.ap_approach_hold != 0.0 ? FL_GREEN : FL_RED);
         m_FLCBtn.color(m_Info.ap_flight_level_change != 0.0 ? FL_GREEN : FL_RED);
-        m_FlightDirectorBtn.color(m_Info.ap_flight_director != 0.0 ? FL_GREEN : FL_RED);
-        m_NavLockedBtn.color(m_Info.ap_nav_lock != 0.0 ? FL_GREEN : FL_RED);
-        m_HeadingLockedBtn.color(m_Info.ap_heading_lock != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingCounter.value(m_Info.ap_heading_lock_dir);
-        m_VerticalSpeedHoldBtn.color(m_Info.ap_vertical_hold != 0.0 ? FL_GREEN : FL_RED);
         m_VerticalSpeedCounter.value(m_Info.ap_vertical_speed);
-        m_WingLvlBtn.color(m_Info.ap_wing_lvl != 0.0 ? FL_GREEN : FL_RED);
-        m_YawDamperBtn.color(m_Info.ap_yaw_damper != 0.0 ? FL_GREEN : FL_RED);
         m_HeadingSlotChoice.value((int)m_Info.ap_heading_idx - 1);
 
         if (m_Info.ap_heading_manually_adjustable == 0.0)
@@ -126,6 +145,21 @@ private:
         m_RefreshBtn.color(FL_BACKGROUND_COLOR);
         m_WingLvlBtn.color(FL_BACKGROUND_COLOR);
         m_YawDamperBtn.color(FL_BACKGROUND_COLOR);
+
+        m_AutopilotBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_AirspeedHoldBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_AutoThrottleBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_AltitudeLockBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_ApproachHoldBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_FLCBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_FlightDirectorBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_NavLockedBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_HeadingLockedBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_VerticalSpeedHoldBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_TestPositionBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_RefreshBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_WingLvlBtn.labelcolor(FL_FOREGROUND_COLOR);
+        m_YawDamperBtn.labelcolor(FL_FOREGROUND_COLOR);
 
         m_AirspeedValCounter.value(m_Info.ap_airspeed);
         m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
@@ -281,6 +315,7 @@ private:
 public:
     Application()
     {
+        OS::use_dark_theme();
         Fl_RGB_Image i(sg_Icon_Data, sg_Icon_Width, sg_Icon_Height, sg_Icon_Channel, 0);
         m_Window.icon(&i);
 
@@ -381,6 +416,7 @@ public:
         {
             m_ConnectBtn.color(FL_GREEN);
             m_ConnectBtn.label("Disconnect");
+            m_ConnectBtn.labelcolor(FL_GRAY0);
             Refresh();
         }
         else
@@ -388,6 +424,7 @@ public:
 
             m_ConnectBtn.color(FL_RED);
             m_ConnectBtn.label("Connect");
+            m_ConnectBtn.labelcolor(FL_FOREGROUND_COLOR);
             ResetUI();
             if (m_Info.quit)
             {
