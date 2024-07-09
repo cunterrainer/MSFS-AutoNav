@@ -440,6 +440,7 @@ public:
             if (m_Info.quit)
             {
                 Fl::error("Quit microsoft flight simulator, lost connection");
+                m_Info.quit = false;
             }
         }
     }
