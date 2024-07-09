@@ -27,7 +27,7 @@ cd MSFS-AutoNav
 
 ## Build fltk
 ```
-cmake -G "Visual Studio 17 2022" -A x64 -S Dependencies/fltk -B Dependencies/fltk/Build -DFLTK_BUILD_TEST=OFF -DFLTK_MSVC_RUNTIME_DLL=OFF -DFLTK_BUILD_GL=OFF
+cmake -G "Visual Studio 17 2022" -A x64 -S Dependencies/fltk -B Dependencies/fltk/Build -DFLTK_BUILD_TEST=OFF -DFLTK_MSVC_RUNTIME_DLL=OFF
 ```
 ```
 cmake --build Dependencies/fltk/Build -j --config Release

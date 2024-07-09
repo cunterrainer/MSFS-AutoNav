@@ -52,19 +52,24 @@ project "AutoNav"
         "src",
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
+        "Dependencies/ImGui/include",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
     externalincludedirs {
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
+        "Dependencies/ImGui/include",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
     links {
+        "ImGui",
+
         "Gdiplus",
         "comctl32",
         "gdi32",
+        "glu32",
         "opengl32",
         "shell32",
         "Shlwapi",
@@ -95,6 +100,7 @@ project "AutoNav"
             "fltk_imagesd",
             "fltk_jpegd",
             "fltk_pngd",
+            "fltk_gld",
             "fltk_zd",
             "fltkd"
         }
@@ -107,8 +113,11 @@ project "AutoNav"
             "fltk_images",
             "fltk_jpeg",
             "fltk_png",
+            "fltk_gl",
             "fltk_z",
             "fltk"
         }
         libdirs "Dependencies/fltk/Build/lib/Release"
         entrypoint "mainCRTStartup"
+
+include "Dependencies/ImGui"
