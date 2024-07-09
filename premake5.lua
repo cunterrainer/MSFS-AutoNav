@@ -39,7 +39,7 @@ project "AutoNav"
     externalwarnings "Default"
     buildoptions { "/sdl" }
     disablewarnings "4706"
-    defines "_CRT_SECURE_NO_WARNINGS"
+    defines {"_CRT_SECURE_NO_WARNINGS", "CURL_STATICLIB"}
     ignoredefaultlibraries { "LIBCMT", "LIBCMTD" }
 
     files {
@@ -53,6 +53,7 @@ project "AutoNav"
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
         "Dependencies/ImGui/include",
+        "Dependencies/ImOsm/Dependencies/curl/include",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
@@ -65,7 +66,10 @@ project "AutoNav"
 
     links {
         "ImGui",
-
+        "Winmm",
+        "crypt32",
+        "Wldap32",
+        "Normaliz",
         "Gdiplus",
         "comctl32",
         "gdi32",
@@ -90,6 +94,7 @@ project "AutoNav"
 
     libdirs {
         "$(MSFS_SDK)\\SimConnect SDK\\lib\\static",
+        "Dependencies/ImOsm/Dependencies/curl/Binaries/windows/x64"
     }
 
     filter { "configurations:Debug" }
@@ -102,7 +107,8 @@ project "AutoNav"
             "fltk_pngd",
             "fltk_gld",
             "fltk_zd",
-            "fltkd"
+            "fltkd",
+            "libcurl_a_debug"
         }
         libdirs "Dependencies/fltk/Build/lib/Debug"
     filter { "configurations:Release" }
@@ -115,9 +121,11 @@ project "AutoNav"
             "fltk_png",
             "fltk_gl",
             "fltk_z",
-            "fltk"
+            "fltk",
+            "libcurl_a"
         }
         libdirs "Dependencies/fltk/Build/lib/Release"
         entrypoint "mainCRTStartup"
 
 include "Dependencies/ImGui"
+include "Dependencies/ImOsm"
