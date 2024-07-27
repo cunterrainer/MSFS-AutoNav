@@ -22,9 +22,10 @@ filter { "configurations:Release" }
     optimize "Speed"
 filter {}
 
--- only for visual studio
+
 flags {
-    "MultiProcessorCompile"
+    "MultiProcessorCompile", -- only for visual studio
+    "LinkTimeOptimization"
 }
 staticruntime "off"
 removeunreferencedcodedata "on"
@@ -126,6 +127,7 @@ project "AutoNav"
             "libcurl_a_debug"
         }
         libdirs "Dependencies/fltk/Build/lib/Debug"
+        
     filter { "configurations:Release" }
         kind "WindowedApp"
         links {
@@ -140,6 +142,7 @@ project "AutoNav"
             "libcurl_a"
         }
         libdirs "Dependencies/fltk/Build/lib/Release"
+        linkoptions { "/OPT:REF", "/OPT:ICF" } -- remove unused sections (code)
         entrypoint "mainCRTStartup"
 
 include "Dependencies/ImGui"
