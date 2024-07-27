@@ -1,26 +1,23 @@
 project "ImOsm"
     kind "StaticLib"
     language "C++"
-    cppdialect "C++17"
+    cppdialect "C++20"
 
     files {
         "src/**.cpp",
-        "include/ImOsm/**.h"
+        "include/ImOsm/**.h",
+        "Dependencies/stb/stb_image.c"
     }
 
     includedirs {
-        "include",
-        "../ImGui/include",
-        "Dependencies/curl/include"
+        "include/ImOsm",
+        "Dependencies/implot",
+        "Dependencies/latlon",
+        "Dependencies/mINI/src/mini",
+        "Dependencies/stb",
+        "Dependencies/curl/include",
+
+        "../ImGui"
     }
 
-    libdirs "Dependencies/curl/Binaries/windows/x64"
-
-    filter { "configurations:Debug" }
-        links {
-            "libcurl_a_debug"
-        }
-    filter { "configurations:Release" }
-        links {
-            "libcurl_a"
-        }
+include "Dependencies/ImPlot"

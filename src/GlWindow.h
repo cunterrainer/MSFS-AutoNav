@@ -12,7 +12,9 @@
 #include <FL/Fl_Gl_Window.H>
 #include <curl/curl.h>
 
-#include "ImGui/imgui.h"
+#include "imgui.h"
+#include "ImOsm/imosm.h"
+#include "ImOsm/imosm_rich.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "ImGui/imgui_impl_opengl3.h"
 
@@ -21,6 +23,7 @@ class GlWidget : public Fl_Gl_Window
 {
 private:
     bool m_Initialised = false;
+    ImOsm::Rich::RichMapPlot _mapPlot;
 public:
     GlWidget(int x, int y, int w, int h, const char* l) : Fl_Gl_Window(x, y, w, h, l)
     {
@@ -32,6 +35,7 @@ public:
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplWin32_Shutdown();
         ImGui::DestroyContext();
+        ImPlot::DestroyContext();
     }
 
 
@@ -54,6 +58,7 @@ public:
             glEnable(GL_DEPTH_TEST);
 
             ImGui::CreateContext();
+            ImPlot::CreateContext();
             ImGuiIO& io = ImGui::GetIO();
             io.IniFilename = nullptr;
 
@@ -127,7 +132,15 @@ public:
         ImGui::Begin("Map", (bool*)0, ImGuiWindowFlags_NoMove);
         ImGui::SetWindowPos({ 0, 50 });
         ImGui::SetWindowSize({ io.DisplaySize.x, io.DisplaySize.y-50 });
+
+        _mapPlot.paint();
+
+
+
+
         ImGui::End();
+
+
 
         //ImGui::ShowDemoWindow();
         ImGui::Render();

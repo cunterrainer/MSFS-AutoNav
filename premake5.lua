@@ -31,7 +31,7 @@ removeunreferencedcodedata "on"
 
 project "AutoNav"
     language "C++"
-    cppdialect "C++17"
+    cppdialect "C++20"
     characterset "Unicode"
 
     flags "FatalCompileWarnings"
@@ -53,7 +53,13 @@ project "AutoNav"
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
         "Dependencies/ImGui/include",
+        "Dependencies/ImGui/include/ImGui",
+        "Dependencies/ImOsm/include/",
+        "Dependencies/ImOsm/Dependencies/stb",
+        "Dependencies/ImOsm/Dependencies/implot",
+        "Dependencies/ImOsm/Dependencies/latlon",
         "Dependencies/ImOsm/Dependencies/curl/include",
+        "Dependencies/ImOsm/Dependencies/mINI/src/mini",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
@@ -61,11 +67,20 @@ project "AutoNav"
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
         "Dependencies/ImGui/include",
+        "Dependencies/ImGui/include/ImGui",
+        "Dependencies/ImOsm/include/",
+        "Dependencies/ImOsm/Dependencies/stb",
+        "Dependencies/ImOsm/Dependencies/implot",
+        "Dependencies/ImOsm/Dependencies/latlon",
+        "Dependencies/ImOsm/Dependencies/curl/include",
+        "Dependencies/ImOsm/Dependencies/mINI/src/mini",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
     links {
         "ImGui",
+        "ImOsm",
+        "ImPlot",
         "Winmm",
         "crypt32",
         "Wldap32",
