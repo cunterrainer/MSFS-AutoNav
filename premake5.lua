@@ -20,12 +20,12 @@ filter { "configurations:Release" }
     symbols "off"
     defines "NDEBUG"
     optimize "Speed"
+    flags "LinkTimeOptimization"
 filter {}
 
 
 flags {
-    "MultiProcessorCompile", -- only for visual studio
-    "LinkTimeOptimization"
+    "MultiProcessorCompile" -- only for visual studio
 }
 staticruntime "off"
 removeunreferencedcodedata "on"
