@@ -6,17 +6,30 @@
 #include <FL/Fl_Gl_Window.H>
 
 #include "ImGui/imgui.h"
+#include "ImOsm/imosm.h"
+#include "ImOsm/imosm_rich.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "ImGui/imgui_impl_opengl3.h"
+
 
 class GlWidget : public Fl_Gl_Window
 {
 private:
     bool m_Initialised = false;
+    ImOsm::Rich::RichMapPlot m_MapPlot;
+    std::shared_ptr<ImOsm::Rich::MarkItem> item = std::make_shared<ImOsm::Rich::MarkItem>(ImOsm::Rich::MarkItem({ 52.520008, 13.404954 }, "Berlin"));
 public:
     GlWidget(int x, int y, int w, int h, const char* l) : Fl_Gl_Window(x, y, w, h, l)
     {
         mode(FL_RGB | FL_ALPHA | FL_DEPTH | FL_DOUBLE);
+
+        ImOsm::Rich::MarkItem::Style style;
+        style.radiusEnabled = true;
+        style.markerFill = { 0.f, 1.f, 0.f, 1.f };
+        style.markerType = ImPlotMarker_Down;
+        style.radiusWeight = 10;
+        item->setStyle(style);
+        m_MapPlot.addItem(item);
     }
 
     ~GlWidget() override
@@ -24,6 +37,7 @@ public:
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplWin32_Shutdown();
         ImGui::DestroyContext();
+        ImPlot::DestroyContext();
     }
 
 
@@ -35,6 +49,7 @@ public:
             glEnable(GL_DEPTH_TEST);
 
             ImGui::CreateContext();
+            ImPlot::CreateContext();
             ImGuiIO& io = ImGui::GetIO();
             io.IniFilename = nullptr;
 
@@ -55,10 +70,22 @@ public:
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
         glClear(GL_COLOR_BUFFER_BIT);
+        // OpenGL code start
 
-        ImGui::Begin("Test");
+        ImGuiIO& io = ImGui::GetIO();
+        ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0.f, 0.f));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
+        ImGui::SetNextWindowPos({ 0, 0 });
+        ImGui::SetNextWindowSize({ io.DisplaySize.x, io.DisplaySize.y });
+        ImGui::Begin("Map", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+
+        m_MapPlot.paint();
+
         ImGui::End();
-        ImGui::ShowDemoWindow();
+        ImGui::PopStyleVar();
+        ImPlot::PopStyleVar();
+
+        // OpenGL code end
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glDrawBuffer(GL_BACK);
@@ -70,16 +97,17 @@ public:
         if (!m_Initialised)
             return Fl_Gl_Window::handle(event);
 
+        ImGuiIO& io = ImGui::GetIO();
         switch (event)
         {
         case FL_PUSH:
         case FL_RELEASE:
-        {
-            ImGuiIO& io = ImGui::GetIO();
             io.AddMousePosEvent(static_cast<float>(Fl::event_x()), static_cast<float>(Fl::event_y()));
             io.AddMouseButtonEvent(ImGuiMouseButton_Left, event == FL_PUSH);
             return 1;
-        }
+        case FL_MOUSEWHEEL:
+            io.AddMouseWheelEvent(0.0f, static_cast<float>(-Fl::event_dy()));
+            return 1;
         default:
             break;
         }

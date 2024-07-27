@@ -2,6 +2,7 @@ project "ImOsm"
     kind "StaticLib"
     language "C++"
     cppdialect "C++20"
+    defines "CURL_STATICLIB"
 
     files {
         "src/**.cpp",

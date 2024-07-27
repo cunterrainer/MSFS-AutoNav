@@ -1,9 +1,9 @@
 #include <memory>
 
-#include "GlWindow.h"
+#include "Application.h"
 
 int main()
 {
-    std::unique_ptr<GlWindow> app = std::make_unique<GlWindow>();
+    std::unique_ptr<Application> app = std::make_unique<Application>();
     app->Show();
 }

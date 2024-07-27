@@ -40,7 +40,7 @@ MapPlot::MapPlot(std::shared_ptr<ITileLoader> &loader)
 MapPlot::~MapPlot() = default;
 
 void MapPlot::paint() {
-  if (ImPlot::BeginPlot("##ImOsmMapPlot", {-1, -1}, _impl->plotFlags)) {
+  if (ImPlot::BeginPlot("##ImOsmMapPlot", {-1, -1}, _impl->plotFlags | ImPlotFlags_NoFrame)) {
 
     ImPlot::SetupAxis(ImAxis_X1, nullptr, _impl->xFlags);
     ImPlot::SetupAxis(ImAxis_Y1, nullptr, _impl->yFlags);
