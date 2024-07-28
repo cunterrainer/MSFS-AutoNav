@@ -210,12 +210,12 @@ public:
         return m_SimConnectHandle;
     }
 
-    void Dispatch(Struct1* s)
+    unsigned long Dispatch(Struct1* s)
     {
         DWORD cbData;
         SIMCONNECT_RECV* pData;
         if (FAILED(SimConnect_GetNextDispatch(m_SimConnectHandle, &pData, &cbData)))
-            return;
+            return 0;
 
         switch (pData->dwID)
         {
@@ -294,6 +294,11 @@ public:
             }
             break;
         }
+        case SIMCONNECT_RECV_ID_EXCEPTION:
+        {
+            SIMCONNECT_RECV_EXCEPTION * except = (SIMCONNECT_RECV_EXCEPTION*)pData;
+            return except->dwException;
+        }
         case SIMCONNECT_RECV_ID_QUIT:
         {
             s->quit = true;
@@ -302,5 +307,6 @@ public:
         default:
             break;
         }
+        return 0;
     }
 };

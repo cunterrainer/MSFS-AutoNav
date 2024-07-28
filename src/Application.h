@@ -614,7 +614,12 @@ public:
             m_Socket.ShouldUpdate = false;
             if (m_Socket.IsConnected())
             {
-                m_Socket.Dispatch(&m_Info);
+                const unsigned long errorCode = m_Socket.Dispatch(&m_Info);
+                if (errorCode)
+                {
+                    Fl::error("Microsoft flight Simulator 2020 exception: %lu", errorCode);
+                }
+
                 if (m_Info.quit)
                 {
                     Connect();
