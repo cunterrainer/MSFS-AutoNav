@@ -11,14 +11,14 @@
 #include "Icon.h"
 #include "Theme.h"
 #include "Socket.h"
-#include "GlWidget.h"
+#include "MapWidget.h"
 #include "CenteredOutput.h"
 
 class Application
 {
 private:
     Fl_Double_Window m_Window = Fl_Double_Window(600, 800, "Auto Nav");
-    GlWidget m_MapWidget = GlWidget(20, 510, 560, 280, "GlWidget");
+    MapWidget m_MapWidget = MapWidget(20, 510, 560, 280, "MapWidget");
 
     CenteredOutput m_AirplaneTitleOut = CenteredOutput(0, 14, 600, 30, "AirplaneTitle");
     Fl_Button  m_ConnectBtn           = Fl_Button ( 20,  58, 115, 70, "Connect");

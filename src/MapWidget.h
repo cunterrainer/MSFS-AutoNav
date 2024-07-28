@@ -12,14 +12,14 @@
 #include "ImGui/imgui_impl_opengl3.h"
 
 
-class GlWidget : public Fl_Gl_Window
+class MapWidget : public Fl_Gl_Window
 {
 private:
     bool m_Initialised = false;
     ImOsm::Rich::RichMapPlot m_MapPlot;
     std::shared_ptr<ImOsm::Rich::MarkItem> item = std::make_shared<ImOsm::Rich::MarkItem>(ImOsm::Rich::MarkItem({ 52.520008, 13.404954 }, "Berlin"));
 public:
-    GlWidget(int x, int y, int w, int h, const char* l) : Fl_Gl_Window(x, y, w, h, l)
+    MapWidget(int x, int y, int w, int h, const char* l) : Fl_Gl_Window(x, y, w, h, l)
     {
         mode(FL_RGB | FL_ALPHA | FL_DEPTH | FL_DOUBLE);
 
@@ -32,7 +32,7 @@ public:
         m_MapPlot.addItem(item);
     }
 
-    ~GlWidget() override
+    ~MapWidget() override
     {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplWin32_Shutdown();
