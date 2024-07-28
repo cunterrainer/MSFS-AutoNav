@@ -76,6 +76,8 @@ struct Struct1
 
     double pos_latitude;
     double pos_longitude;
+    double pos_altitude;
+    double pos_airspeed;
 
     bool updated = false;
     bool quit = false;
@@ -125,6 +127,8 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING SLOT INDEX", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "PLANE LATITUDE", "degree latitude");
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "PLANE LONGITUDE", "degree longitude");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "PLANE ALTITUDE", "feet");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AIRSPEED MACH", "mach");
 
         MapClientEventToSimEvent(GROUP0, EVENT_AUTOPILOT, "AP_MASTER");
         MapClientEventToSimEvent(GROUP0, EVENT_AIRSPEED_HOLD, "AP_AIRSPEED_HOLD");
@@ -279,6 +283,8 @@ public:
                     s->ap_heading_idx = ps->ap_heading_idx;
                     s->pos_latitude = ps->pos_latitude;
                     s->pos_longitude = ps->pos_longitude;
+                    s->pos_altitude = ps->pos_altitude;
+                    s->pos_airspeed = ps->pos_airspeed;
                     s->updated = true;
                 }
                 break;

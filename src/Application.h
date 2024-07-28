@@ -45,12 +45,10 @@ private:
     Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
     Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
     Fl_Output  m_PlanePosOut          = Fl_Output (20, 449, 300, 25, "PlanePosition");
-    Fl_Output  m_PlaneAltSpeedOut     = Fl_Output (20, 474, 250, 25, "PlaneAirSpeed");
+    Fl_Output  m_PlaneAltSpeedOut     = Fl_Output (20, 474, 300, 25, "PlaneAirSpeed");
 
     Socket m_Socket;
     Struct1 m_Info;
-    std::string m_PlanePosValue;
-    std::string m_PlaneAltSpeedValue;
 private:
     void SetButtonColor(Fl_Button& btn, double value) const noexcept
     {
@@ -112,10 +110,10 @@ private:
         if (m_Info.ap_alt_manually_adjustable == 0.0)
             m_HeadingCounter.tooltip("Set altitude (not adjustable for this aircraft)");
 
-        m_PlanePosValue = std::format("Latitude: {:.6f} Longitude: {:.6f}", m_Info.pos_latitude, m_Info.pos_longitude);
-        m_PlaneAltSpeedValue = std::format("Altitude: {} Airspeed: {:.2f}", 100000, 6.12);
-        m_PlanePosOut.value(m_PlanePosValue.c_str());
-        m_PlaneAltSpeedOut.value(m_PlaneAltSpeedValue.c_str());
+        const std::string planePos = std::format("Latitude: {:.6f}, Longitude: {:.6f}", m_Info.pos_latitude, m_Info.pos_longitude);
+        const std::string planeAltSpeed = std::format("Altitude: {:.0f} feet, Airspeed: {:.2f} Mach", m_Info.pos_altitude, m_Info.pos_airspeed);
+        m_PlanePosOut.value(planePos.c_str());
+        m_PlaneAltSpeedOut.value(planeAltSpeed.c_str());
 
         m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
         m_MapWidget.SetPlaneTitle(m_Info.title);
@@ -189,6 +187,8 @@ private:
         m_AutopilotBtn.tooltip("Toggle Autopilot");
 
         m_AutopilotBtn.activate();
+        m_PlanePosOut.value("");
+        m_PlaneAltSpeedOut.value("");
         m_MapWidget.Reset();
 
         m_ConnectBtn.redraw();
