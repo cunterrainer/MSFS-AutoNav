@@ -9,6 +9,7 @@
 #include <FL/Fl_Counter.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Value_Output.H>
+#include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Double_Window.H>
 
 #include "Icon.h"
@@ -44,8 +45,9 @@ private:
     Fl_Choice  m_HeadingSlotChoice    = Fl_Choice (168, 217, 115, 22, "Heading slot");
     Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
     Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
-    Fl_Output  m_PlanePosOut          = Fl_Output (20, 449, 300, 25, "PlanePosition");
-    Fl_Output  m_PlaneAltSpeedOut     = Fl_Output (20, 474, 280, 25, "PlaneAirSpeed");
+    Fl_Output  m_PlanePosOut          = Fl_Output ( 20, 424, 300, 25, "PlanePosition");
+    Fl_Output  m_PlaneAltSpeedOut     = Fl_Output ( 20, 449, 280, 25, "PlaneAirSpeed");
+    Fl_Check_Button m_PlaneAltSpCheck = Fl_Check_Button(20, 474, 150, 25, "Track plane position");
 
     Socket m_Socket;
     Struct1 m_Info;
@@ -341,11 +343,17 @@ private:
         Application* app = (Application*)a;
         app->ToggleYawDamper();
     }
-
+    
     static inline void OnHeadingIdxChosen(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
         app->SetHeadingIndex();
+    }
+
+    static inline void OnPlaneAltChecked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->PlaneAltChecked();
     }
 public:
     Application()
@@ -418,6 +426,8 @@ public:
 
         m_RefreshBtn.callback(OnRefreshClicked, this);
         m_TestPositionBtn.callback(OnSetPositionClicked, this);
+        m_PlaneAltSpCheck.callback(OnPlaneAltChecked, this);
+        m_PlaneAltSpCheck.value(1);
 
         m_ConnectBtn.tooltip("Connect to MSFS");
         m_AutopilotBtn.tooltip("Toggle Autopilot");
@@ -439,6 +449,7 @@ public:
         m_WingLvlBtn.tooltip("Toggle wing level mode");
         m_YawDamperBtn.tooltip("Toggle yam damper");
         m_HeadingSlotChoice.tooltip("Select heading slot (Try if NAV mode doesn't follow e.g. a320)");
+        m_PlaneAltSpCheck.tooltip("Tracking consumes more resources");
 
         m_Window.resizable(m_Window);
         m_Window.end();
@@ -585,6 +596,12 @@ public:
     inline void SetHeadingIndex() const noexcept
     {
         TransmitEvent(EVENT_SET_HEADING_IDX, static_cast<DWORD>(m_HeadingSlotChoice.value() + 1));
+    }
+
+
+    inline void PlaneAltChecked() noexcept
+    {
+        m_Socket.TogglePlanePosData();
     }
 
 

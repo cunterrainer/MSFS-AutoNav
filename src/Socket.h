@@ -86,6 +86,7 @@ class Socket
 private:
     HANDLE m_SimConnectHandle;
     bool m_Connected = false;
+    bool m_RequestPositionData = true;
 public:
     bool ShouldUpdate = false;
 private:
@@ -147,7 +148,8 @@ private:
 
         hr = SimConnect_SetNotificationGroupPriority(m_SimConnectHandle, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
         hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_1, DEFINITION_1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
-        hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_PLANE_POS, DEFINITION_PLANE_POS, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
+        if (m_RequestPositionData)
+            hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_PLANE_POS, DEFINITION_PLANE_POS, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
         m_Connected = true;
         return true;
     }
@@ -189,6 +191,23 @@ public:
     inline bool IsConnected() const noexcept
     {
         return m_Connected;
+    }
+
+
+    void TogglePlanePosData() noexcept
+    {
+        if (IsConnected())
+        {
+            if (m_RequestPositionData)
+            {
+                SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_PLANE_POS, DEFINITION_PLANE_POS, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_NEVER, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
+            }
+            else
+            {
+                SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_PLANE_POS, DEFINITION_PLANE_POS, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
+            }
+        }
+        m_RequestPositionData = !m_RequestPositionData;
     }
 
 
