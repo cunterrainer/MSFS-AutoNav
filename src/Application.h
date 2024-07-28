@@ -67,9 +67,24 @@ private:
 
     void UpdateUI()
     {
-        if (!m_Info.updated)
-            return;
+        if (m_Info.update_pos)
+        {
+            const std::string planePos = std::format("Latitude: {:.6f}, Longitude: {:.6f}", m_Info.pos_latitude, m_Info.pos_longitude);
+            const std::string planeAltSpeed = std::format("Altitude: {:.0f} feet, Airspeed: {:.2f} Mach", m_Info.pos_altitude, m_Info.pos_airspeed);
+            m_PlanePosOut.value(planePos.c_str());
+            m_PlaneAltSpeedOut.value(planeAltSpeed.c_str());
 
+            m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
+            m_MapWidget.SetPlaneTitle(m_Info.title);
+            m_Info.update_pos = false;
+        }
+
+        if (!m_Info.update_ap)
+        {
+            return;
+        }
+
+        // update ap
         if (m_Info.ap_available == 0.0)
         {
             m_AutopilotBtn.deactivate();
@@ -110,14 +125,6 @@ private:
         if (m_Info.ap_alt_manually_adjustable == 0.0)
             m_HeadingCounter.tooltip("Set altitude (not adjustable for this aircraft)");
 
-        const std::string planePos = std::format("Latitude: {:.6f}, Longitude: {:.6f}", m_Info.pos_latitude, m_Info.pos_longitude);
-        const std::string planeAltSpeed = std::format("Altitude: {:.0f} feet, Airspeed: {:.2f} Mach", m_Info.pos_altitude, m_Info.pos_airspeed);
-        m_PlanePosOut.value(planePos.c_str());
-        m_PlaneAltSpeedOut.value(planeAltSpeed.c_str());
-
-        m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
-        m_MapWidget.SetPlaneTitle(m_Info.title);
-
         m_YawDamperBtn.redraw();
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
@@ -130,7 +137,7 @@ private:
         m_HeadingLockedBtn.redraw();
         m_VerticalSpeedHoldBtn.redraw();
         m_WingLvlBtn.redraw();
-        m_Info.updated = false;
+        m_Info.update_ap = false;
     }
 
 

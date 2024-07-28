@@ -11,12 +11,6 @@ enum GROUP_ID {
     GROUP0,
 };
 
-enum INPUT_ID {
-    INPUT_6,
-    INPUT0,
-};
-
-
 enum EVENT_ID {
     // Buttons
     EVENT_AUTOPILOT,
@@ -42,11 +36,13 @@ enum EVENT_ID {
 
 enum DATA_DEFINE_ID {
     DEFINITION_1,
-    DEFINITION_6
+    DEFINITION_6,
+    DEFINITION_PLANE_POS
 };
 
 enum DATA_REQUEST_ID {
-    REQUEST_1
+    REQUEST_1,
+    REQUEST_PLANE_POS
 };
 
 
@@ -79,7 +75,8 @@ struct Struct1
     double pos_altitude;
     double pos_airspeed;
 
-    bool updated = false;
+    bool update_ap = false;
+    bool update_pos = false;
     bool quit = false;
 };
 
@@ -125,10 +122,10 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT WING LEVELER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT YAW DAMPER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING SLOT INDEX", NULL);
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "PLANE LATITUDE", "degree latitude");
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "PLANE LONGITUDE", "degree longitude");
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "PLANE ALTITUDE", "feet");
-        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AIRSPEED MACH", "mach");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_PLANE_POS, "PLANE LATITUDE", "degree latitude");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_PLANE_POS, "PLANE LONGITUDE", "degree longitude");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_PLANE_POS, "PLANE ALTITUDE", "feet");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_PLANE_POS, "AIRSPEED MACH", "mach");
 
         MapClientEventToSimEvent(GROUP0, EVENT_AUTOPILOT, "AP_MASTER");
         MapClientEventToSimEvent(GROUP0, EVENT_AIRSPEED_HOLD, "AP_AIRSPEED_HOLD");
@@ -150,6 +147,7 @@ private:
 
         hr = SimConnect_SetNotificationGroupPriority(m_SimConnectHandle, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
         hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_1, DEFINITION_1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
+        hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_PLANE_POS, DEFINITION_PLANE_POS, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
         m_Connected = true;
         return true;
     }
@@ -281,12 +279,26 @@ public:
                     s->ap_wing_lvl = ps->ap_wing_lvl;
                     s->ap_yaw_damper = ps->ap_yaw_damper;
                     s->ap_heading_idx = ps->ap_heading_idx;
-                    s->pos_latitude = ps->pos_latitude;
-                    s->pos_longitude = ps->pos_longitude;
-                    s->pos_altitude = ps->pos_altitude;
-                    s->pos_airspeed = ps->pos_airspeed;
-                    s->updated = true;
+                    s->update_ap = true;
                 }
+                break;
+            }
+            case REQUEST_PLANE_POS:
+            {
+                struct PlanePos
+                {
+                    double lat;
+                    double lon;
+                    double alt;
+                    double speed;
+                };
+
+                PlanePos* pp = (PlanePos*)&pObjData->dwData;
+                s->pos_latitude = pp->lat;
+                s->pos_longitude = pp->lon;
+                s->pos_altitude = pp->alt;
+                s->pos_airspeed = pp->speed;
+                s->update_pos = true;
                 break;
             }
             default:
