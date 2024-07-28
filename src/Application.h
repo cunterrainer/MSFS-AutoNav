@@ -105,6 +105,10 @@ private:
         if (m_Info.ap_alt_manually_adjustable == 0.0)
             m_HeadingCounter.tooltip("Set altitude (not adjustable for this aircraft)");
 
+        m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
+        m_MapWidget.SetPlaneTitle(m_Info.title);
+
+        m_YawDamperBtn.redraw();
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
         m_AutoThrottleBtn.redraw();
@@ -116,8 +120,6 @@ private:
         m_HeadingLockedBtn.redraw();
         m_VerticalSpeedHoldBtn.redraw();
         m_WingLvlBtn.redraw();
-        m_YawDamperBtn.redraw();
-        m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
         m_Info.updated = false;
     }
 

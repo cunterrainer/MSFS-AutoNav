@@ -17,7 +17,7 @@ class MapWidget : public Fl_Gl_Window
 private:
     bool m_Initialised = false;
     ImOsm::Rich::RichMapPlot m_MapPlot;
-    std::shared_ptr<ImOsm::Rich::MarkItem> item = std::make_shared<ImOsm::Rich::MarkItem>(ImOsm::Rich::MarkItem({ 52.520008, 13.404954 }, "Berlin"));
+    std::shared_ptr<ImOsm::Rich::MarkItem> m_Item = std::make_shared<ImOsm::Rich::MarkItem>(ImOsm::Rich::MarkItem({ 0, 0 }, ""));
 public:
     MapWidget(int x, int y, int w, int h, const char* l) : Fl_Gl_Window(x, y, w, h, l)
     {
@@ -28,8 +28,8 @@ public:
         style.markerFill = { 0.f, 1.f, 0.f, 1.f };
         style.markerType = ImPlotMarker_Down;
         style.radiusWeight = 10;
-        item->setStyle(style);
-        m_MapPlot.addItem(item);
+        m_Item->setStyle(style);
+        m_MapPlot.addItem(m_Item);
     }
 
     ~MapWidget() override
@@ -118,6 +118,12 @@ public:
 
     void SetCoords(double latitude, double longitude)
     {
-        item->setCoords({ latitude, longitude });
+        m_Item->setCoords({ latitude, longitude });
+    }
+
+
+    void SetPlaneTitle(const char* title)
+    {
+        m_Item->setText(title);
     }
 };
