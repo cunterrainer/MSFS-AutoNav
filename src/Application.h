@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+#include <format>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Choice.H>
@@ -36,14 +39,18 @@ private:
     Fl_Counter m_HeadingCounter       = Fl_Counter(168, 164, 115, 25, "Heading");
     Fl_Button  m_VerticalSpeedHoldBtn = Fl_Button (465, 211, 115, 70, "V/S");
     Fl_Counter m_VerticalSpeedCounter = Fl_Counter(465, 164, 115, 25, "Vertical speed");
-    Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
-    Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
     Fl_Button  m_WingLvlBtn           = Fl_Button (465, 301, 115, 70, "Wing LVL");
     Fl_Button  m_YawDamperBtn         = Fl_Button ( 22, 301, 115, 70, "Yaw Damper");
     Fl_Choice  m_HeadingSlotChoice    = Fl_Choice (168, 217, 115, 22, "Heading slot");
+    Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
+    Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
+    Fl_Output  m_PlanePosOut          = Fl_Output (20, 449, 300, 25, "PlanePosition");
+    Fl_Output  m_PlaneAltSpeedOut     = Fl_Output (20, 474, 250, 25, "PlaneAirSpeed");
 
     Socket m_Socket;
     Struct1 m_Info;
+    std::string m_PlanePosValue;
+    std::string m_PlaneAltSpeedValue;
 private:
     void SetButtonColor(Fl_Button& btn, double value) const noexcept
     {
@@ -104,6 +111,11 @@ private:
 
         if (m_Info.ap_alt_manually_adjustable == 0.0)
             m_HeadingCounter.tooltip("Set altitude (not adjustable for this aircraft)");
+
+        m_PlanePosValue = std::format("Latitude: {:.6f} Longitude: {:.6f}", m_Info.pos_latitude, m_Info.pos_longitude);
+        m_PlaneAltSpeedValue = std::format("Altitude: {} Airspeed: {:.2f}", 100000, 6.12);
+        m_PlanePosOut.value(m_PlanePosValue.c_str());
+        m_PlaneAltSpeedOut.value(m_PlaneAltSpeedValue.c_str());
 
         m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
         m_MapWidget.SetPlaneTitle(m_Info.title);
@@ -340,6 +352,16 @@ public:
         m_AirplaneTitleOut.color(FL_BACKGROUND_COLOR);
         m_AirplaneTitleOut.labeltype(FL_NO_LABEL);
         m_AirplaneTitleOut.visible_focus(false);
+
+        m_PlanePosOut.box(FL_FLAT_BOX);
+        m_PlanePosOut.color(FL_BACKGROUND_COLOR);
+        m_PlanePosOut.labeltype(FL_NO_LABEL);
+        m_PlanePosOut.visible_focus(false);
+
+        m_PlaneAltSpeedOut.box(FL_FLAT_BOX);
+        m_PlaneAltSpeedOut.color(FL_BACKGROUND_COLOR);
+        m_PlaneAltSpeedOut.labeltype(FL_NO_LABEL);
+        m_PlaneAltSpeedOut.visible_focus(false);
 
         m_ConnectBtn.color(FL_RED);
         m_ConnectBtn.callback(OnConnectClicked, this);

@@ -73,12 +73,12 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
         // OpenGL code start
 
-        ImGuiIO& io = ImGui::GetIO();
+        const ImGuiIO& io = ImGui::GetIO();
         ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0.f, 0.f));
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
         ImGui::SetNextWindowPos({ 0, 0 });
         ImGui::SetNextWindowSize({ io.DisplaySize.x, io.DisplaySize.y });
-        ImGui::Begin("Map", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+        ImGui::Begin("#Map", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 
         m_MapPlot.paint();
 
