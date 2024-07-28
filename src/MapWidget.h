@@ -25,10 +25,11 @@ public:
 
         ImOsm::Rich::MarkItem::Style style;
         style.radiusEnabled = true;
-        style.markerFill = { 0.f, 1.f, 0.f, 1.f };
-        style.markerType = ImPlotMarker_Down;
+        style.markerFill = { 0.1f, 0.11f, 0.11f, 1.f };
+        style.markerType = ImPlotMarker_Diamond;
         style.radiusWeight = 10;
         m_Item->setStyle(style);
+        m_Item->setEnabled(false);
         m_MapPlot.addItem(m_Item);
     }
 
@@ -118,6 +119,7 @@ public:
 
     void SetCoords(double latitude, double longitude)
     {
+        m_Item->setEnabled(true);
         m_Item->setCoords({ latitude, longitude });
     }
 
