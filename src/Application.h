@@ -45,7 +45,7 @@ private:
     Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
     Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
     Fl_Output  m_PlanePosOut          = Fl_Output (20, 449, 300, 25, "PlanePosition");
-    Fl_Output  m_PlaneAltSpeedOut     = Fl_Output (20, 474, 300, 25, "PlaneAirSpeed");
+    Fl_Output  m_PlaneAltSpeedOut     = Fl_Output (20, 474, 280, 25, "PlaneAirSpeed");
 
     Socket m_Socket;
     Struct1 m_Info;
