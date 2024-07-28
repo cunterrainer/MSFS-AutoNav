@@ -114,4 +114,10 @@ public:
 
         return Fl_Gl_Window::handle(event); // Call base class handle for any unhandled events
     }
+
+
+    void SetCoords(double latitude, double longitude)
+    {
+        item->setCoords({ latitude, longitude });
+    }
 };

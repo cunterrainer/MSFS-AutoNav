@@ -42,11 +42,11 @@ enum EVENT_ID {
 
 enum DATA_DEFINE_ID {
     DEFINITION_1,
-    DEFINITION_6,
+    DEFINITION_6
 };
 
 enum DATA_REQUEST_ID {
-    REQUEST_1,
+    REQUEST_1
 };
 
 
@@ -73,6 +73,10 @@ struct Struct1
     double ap_wing_lvl;
     double ap_yaw_damper;
     double ap_heading_idx;
+
+    double pos_latitude;
+    double pos_longitude;
+
     bool updated = false;
     bool quit = false;
 };
@@ -119,6 +123,8 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT WING LEVELER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT YAW DAMPER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING SLOT INDEX", NULL);
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "PLANE LATITUDE", "degree latitude");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "PLANE LONGITUDE", "degree longitude");
 
         MapClientEventToSimEvent(GROUP0, EVENT_AUTOPILOT, "AP_MASTER");
         MapClientEventToSimEvent(GROUP0, EVENT_AIRSPEED_HOLD, "AP_AIRSPEED_HOLD");
@@ -271,6 +277,8 @@ public:
                     s->ap_wing_lvl = ps->ap_wing_lvl;
                     s->ap_yaw_damper = ps->ap_yaw_damper;
                     s->ap_heading_idx = ps->ap_heading_idx;
+                    s->pos_latitude = ps->pos_latitude;
+                    s->pos_longitude = ps->pos_longitude;
                     s->updated = true;
                 }
                 break;

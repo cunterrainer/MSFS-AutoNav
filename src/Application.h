@@ -18,7 +18,7 @@ class Application
 {
 private:
     Fl_Double_Window m_Window = Fl_Double_Window(600, 800, "Auto Nav");
-    GlWidget m_GlWidget = GlWidget(20, 510, 560, 280, "GlWidget");
+    GlWidget m_MapWidget = GlWidget(20, 510, 560, 280, "GlWidget");
 
     CenteredOutput m_AirplaneTitleOut = CenteredOutput(0, 14, 600, 30, "AirplaneTitle");
     Fl_Button  m_ConnectBtn           = Fl_Button ( 20,  58, 115, 70, "Connect");
@@ -117,6 +117,7 @@ private:
         m_VerticalSpeedHoldBtn.redraw();
         m_WingLvlBtn.redraw();
         m_YawDamperBtn.redraw();
+        m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
         m_Info.updated = false;
     }
 
@@ -595,7 +596,7 @@ public:
                 }
                 UpdateUI();
             }
-            m_GlWidget.redraw();
+            m_MapWidget.redraw();
         }
     }
 };
