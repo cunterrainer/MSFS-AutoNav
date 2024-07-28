@@ -177,6 +177,7 @@ private:
         m_AutopilotBtn.tooltip("Toggle Autopilot");
 
         m_AutopilotBtn.activate();
+        m_MapWidget.Reset();
 
         m_ConnectBtn.redraw();
         m_AutopilotBtn.redraw();

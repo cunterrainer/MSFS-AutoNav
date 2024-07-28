@@ -117,6 +117,12 @@ public:
     }
 
 
+    void Reset()
+    {
+        m_Item->setEnabled(false);
+    }
+
+
     void SetCoords(double latitude, double longitude)
     {
         m_Item->setEnabled(true);
