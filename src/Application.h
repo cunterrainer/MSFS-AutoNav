@@ -626,7 +626,7 @@ public:
                 }
                 UpdateUI();
             }
-            m_MapWidget.redraw();
+            m_MapWidget.flush();
         }
     }
 };
