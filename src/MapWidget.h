@@ -104,7 +104,7 @@ public:
         case FL_PUSH:
         case FL_RELEASE:
             io.AddMousePosEvent(static_cast<float>(Fl::event_x()), static_cast<float>(Fl::event_y()));
-            io.AddMouseButtonEvent(ImGuiMouseButton_Left, event == FL_PUSH);
+            io.AddMouseButtonEvent(Fl::event_button() == FL_LEFT_MOUSE ? ImGuiMouseButton_Left : ImGuiMouseButton_Right, event == FL_PUSH);
             return 1;
         case FL_MOUSEWHEEL:
             io.AddMouseWheelEvent(0.0f, static_cast<float>(-Fl::event_dy()));
@@ -117,20 +117,20 @@ public:
     }
 
 
-    void Reset()
+    void Reset() noexcept
     {
         m_Item->setEnabled(false);
     }
 
 
-    void SetCoords(double latitude, double longitude)
+    void SetCoords(double latitude, double longitude) noexcept
     {
         m_Item->setEnabled(true);
         m_Item->setCoords({ latitude, longitude });
     }
 
 
-    void SetPlaneTitle(const char* title)
+    void SetPlaneTitle(const char* title) noexcept
     {
         m_Item->setText(title);
     }
