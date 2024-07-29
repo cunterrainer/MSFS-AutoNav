@@ -2,7 +2,7 @@
 A program to controll the auto pilot in microsoft flight simulator 2020 using a unified interface. This program does **NOT** provide an autopilot for aircrafts that do not have those, thus some features may not be available on all aircrafts.  
 If you just want to use and not build it, download the repository, there is a prebuild exe in the docs/ folder.
 
-Program             |  Cockpit PFD
+Auto Nav             |  Cockpit PFD
 :-------------------------:|:-------------------------:
 ![](./docs/program.PNG)  |  ![](./docs/cockpit.PNG)
 
