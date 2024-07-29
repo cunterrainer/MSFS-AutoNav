@@ -1,0 +1,9 @@
+#pragma once
+#include <ImOsm/ImOsmIRichItem.h>
+#include <ImOsm/ImOsmRichDestinationCalcWidget.h>
+#include <ImOsm/ImOsmRichDistanceCalcWidget.h>
+#include <ImOsm/ImOsmRichMapPlot.h>
+#include <ImOsm/ImOsmRichMarkEditorWidget.h>
+#include <ImOsm/ImOsmRichMarkItem.h>
+#include <ImOsm/ImOsmRichMarkItemWidget.h>
+#include <ImOsm/ImOsmRichMarkStorage.h>

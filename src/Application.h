@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+#include <format>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Choice.H>
@@ -6,17 +9,20 @@
 #include <FL/Fl_Counter.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Value_Output.H>
+#include <FL/Fl_Check_Button.H>
 #include <FL/Fl_Double_Window.H>
 
 #include "Icon.h"
 #include "Theme.h"
 #include "Socket.h"
+#include "MapWidget.h"
 #include "CenteredOutput.h"
 
 class Application
 {
 private:
-    Fl_Double_Window m_Window = Fl_Double_Window(600, 520, "Auto Nav");
+    Fl_Double_Window m_Window = Fl_Double_Window(600, 800, "Auto Nav");
+    MapWidget m_MapWidget = MapWidget(20, 510, 560, 280, "MapWidget");
 
     CenteredOutput m_AirplaneTitleOut = CenteredOutput(0, 14, 600, 30, "AirplaneTitle");
     Fl_Button  m_ConnectBtn           = Fl_Button ( 20,  58, 115, 70, "Connect");
@@ -34,11 +40,14 @@ private:
     Fl_Counter m_HeadingCounter       = Fl_Counter(168, 164, 115, 25, "Heading");
     Fl_Button  m_VerticalSpeedHoldBtn = Fl_Button (465, 211, 115, 70, "V/S");
     Fl_Counter m_VerticalSpeedCounter = Fl_Counter(465, 164, 115, 25, "Vertical speed");
-    Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
-    Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
     Fl_Button  m_WingLvlBtn           = Fl_Button (465, 301, 115, 70, "Wing LVL");
     Fl_Button  m_YawDamperBtn         = Fl_Button ( 22, 301, 115, 70, "Yaw Damper");
     Fl_Choice  m_HeadingSlotChoice    = Fl_Choice (168, 217, 115, 22, "Heading slot");
+    Fl_Button  m_TestPositionBtn      = Fl_Button (316, 474, 115, 25, "Test position");
+    Fl_Button  m_RefreshBtn           = Fl_Button (465, 474, 115, 25, "Refresh @refresh");
+    Fl_Output  m_PlanePosOut          = Fl_Output ( 20, 424, 300, 25, "PlanePosition");
+    Fl_Output  m_PlaneAltSpeedOut     = Fl_Output ( 20, 449, 280, 25, "PlaneAirSpeed");
+    Fl_Check_Button m_PlaneAltSpCheck = Fl_Check_Button(20, 474, 150, 25, "Track plane position");
 
     Socket m_Socket;
     Struct1 m_Info;
@@ -60,9 +69,24 @@ private:
 
     void UpdateUI()
     {
-        if (!m_Info.updated)
-            return;
+        if (m_Info.update_pos)
+        {
+            const std::string planePos = std::format("Latitude: {:.6f}, Longitude: {:.6f}", m_Info.pos_latitude, m_Info.pos_longitude);
+            const std::string planeAltSpeed = std::format("Altitude: {:.0f} feet, Airspeed: {:.2f} Mach", m_Info.pos_altitude, m_Info.pos_airspeed);
+            m_PlanePosOut.value(planePos.c_str());
+            m_PlaneAltSpeedOut.value(planeAltSpeed.c_str());
 
+            m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
+            m_MapWidget.SetPlaneTitle(m_Info.title);
+            m_Info.update_pos = false;
+        }
+
+        if (!m_Info.update_ap)
+        {
+            return;
+        }
+
+        // update ap
         if (m_Info.ap_available == 0.0)
         {
             m_AutopilotBtn.deactivate();
@@ -103,6 +127,7 @@ private:
         if (m_Info.ap_alt_manually_adjustable == 0.0)
             m_HeadingCounter.tooltip("Set altitude (not adjustable for this aircraft)");
 
+        m_YawDamperBtn.redraw();
         m_AutopilotBtn.redraw();
         m_AirspeedHoldBtn.redraw();
         m_AutoThrottleBtn.redraw();
@@ -114,8 +139,7 @@ private:
         m_HeadingLockedBtn.redraw();
         m_VerticalSpeedHoldBtn.redraw();
         m_WingLvlBtn.redraw();
-        m_YawDamperBtn.redraw();
-        m_Info.updated = false;
+        m_Info.update_ap = false;
     }
 
 
@@ -131,6 +155,10 @@ private:
         m_Info.ap_alt_manually_adjustable = 0;
         m_Info.ap_heading_manually_adjustable = 0;
         m_HeadingSlotChoice.value(-1);
+        m_Info.pos_airspeed = 0;
+        m_Info.pos_altitude = 0;
+        m_Info.pos_latitude = 0;
+        m_Info.pos_longitude = 0;
 
         m_AutopilotBtn.color(FL_BACKGROUND_COLOR);
         m_AirspeedHoldBtn.color(FL_BACKGROUND_COLOR);
@@ -172,6 +200,9 @@ private:
         m_AutopilotBtn.tooltip("Toggle Autopilot");
 
         m_AutopilotBtn.activate();
+        m_PlanePosOut.value("");
+        m_PlaneAltSpeedOut.value("");
+        m_MapWidget.Reset();
 
         m_ConnectBtn.redraw();
         m_AutopilotBtn.redraw();
@@ -316,11 +347,17 @@ private:
         Application* app = (Application*)a;
         app->ToggleYawDamper();
     }
-
+    
     static inline void OnHeadingIdxChosen(Fl_Widget*, void* a)
     {
         Application* app = (Application*)a;
         app->SetHeadingIndex();
+    }
+
+    static inline void OnPlaneAltChecked(Fl_Widget*, void* a)
+    {
+        Application* app = (Application*)a;
+        app->PlaneAltChecked();
     }
 public:
     Application()
@@ -334,6 +371,16 @@ public:
         m_AirplaneTitleOut.color(FL_BACKGROUND_COLOR);
         m_AirplaneTitleOut.labeltype(FL_NO_LABEL);
         m_AirplaneTitleOut.visible_focus(false);
+
+        m_PlanePosOut.box(FL_FLAT_BOX);
+        m_PlanePosOut.color(FL_BACKGROUND_COLOR);
+        m_PlanePosOut.labeltype(FL_NO_LABEL);
+        m_PlanePosOut.visible_focus(false);
+
+        m_PlaneAltSpeedOut.box(FL_FLAT_BOX);
+        m_PlaneAltSpeedOut.color(FL_BACKGROUND_COLOR);
+        m_PlaneAltSpeedOut.labeltype(FL_NO_LABEL);
+        m_PlaneAltSpeedOut.visible_focus(false);
 
         m_ConnectBtn.color(FL_RED);
         m_ConnectBtn.callback(OnConnectClicked, this);
@@ -383,6 +430,8 @@ public:
 
         m_RefreshBtn.callback(OnRefreshClicked, this);
         m_TestPositionBtn.callback(OnSetPositionClicked, this);
+        m_PlaneAltSpCheck.callback(OnPlaneAltChecked, this);
+        m_PlaneAltSpCheck.value(1);
 
         m_ConnectBtn.tooltip("Connect to MSFS");
         m_AutopilotBtn.tooltip("Toggle Autopilot");
@@ -404,6 +453,7 @@ public:
         m_WingLvlBtn.tooltip("Toggle wing level mode");
         m_YawDamperBtn.tooltip("Toggle yam damper");
         m_HeadingSlotChoice.tooltip("Select heading slot (Try if NAV mode doesn't follow e.g. a320)");
+        m_PlaneAltSpCheck.tooltip("Tracking consumes more resources");
 
         m_Window.resizable(m_Window);
         m_Window.end();
@@ -553,6 +603,12 @@ public:
     }
 
 
+    inline void PlaneAltChecked() noexcept
+    {
+        m_Socket.TogglePlanePosData();
+    }
+
+
     inline void SetVerticalSpeed() const noexcept
     {
         if (m_VerticalSpeedHoldBtn.color() == FL_RED)
@@ -566,16 +622,7 @@ public:
 
     void SetPosition() const noexcept
     {
-        SIMCONNECT_DATA_INITPOSITION Init;
-        Init.Altitude = 5000.0;
-        Init.Latitude = 48.353834871306226;
-        Init.Longitude = 11.77422621968804;
-        Init.Pitch = 0.0;
-        Init.Bank = -1.0;
-        Init.Heading = 360;
-        Init.OnGround = 0;
-        Init.Airspeed = 100;
-        SimConnect_SetDataOnSimObject(m_Socket.Handle(), DEFINITION_6, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(Init), &Init);
+        m_Socket.SetTestPosition();
     }
 
     inline void Show() noexcept
@@ -586,13 +633,19 @@ public:
             m_Socket.ShouldUpdate = false;
             if (m_Socket.IsConnected())
             {
-                m_Socket.Dispatch(&m_Info);
+                const unsigned long errorCode = m_Socket.Dispatch(&m_Info);
+                if (errorCode)
+                {
+                    Fl::error("Microsoft flight Simulator 2020 exception: %lu", errorCode);
+                }
+
                 if (m_Info.quit)
                 {
                     Connect();
                 }
                 UpdateUI();
             }
+            m_MapWidget.redraw();
         }
     }
 };

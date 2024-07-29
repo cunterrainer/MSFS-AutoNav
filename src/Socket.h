@@ -11,12 +11,6 @@ enum GROUP_ID {
     GROUP0,
 };
 
-enum INPUT_ID {
-    INPUT_6,
-    INPUT0,
-};
-
-
 enum EVENT_ID {
     // Buttons
     EVENT_AUTOPILOT,
@@ -43,16 +37,18 @@ enum EVENT_ID {
 enum DATA_DEFINE_ID {
     DEFINITION_1,
     DEFINITION_6,
+    DEFINITION_PLANE_POS
 };
 
 enum DATA_REQUEST_ID {
     REQUEST_1,
+    REQUEST_PLANE_POS
 };
 
 
 struct Struct1
 {
-    char   title[256];
+    char   title[256] = { 0 };
     double ap;
     double ap_available;
     double ap_airspeed;
@@ -73,7 +69,14 @@ struct Struct1
     double ap_wing_lvl;
     double ap_yaw_damper;
     double ap_heading_idx;
-    bool updated = false;
+
+    double pos_latitude = 0.0;
+    double pos_longitude = 0.0;
+    double pos_altitude = 0.0;
+    double pos_airspeed = 0.0;
+
+    bool update_ap = false;
+    bool update_pos = false;
     bool quit = false;
 };
 
@@ -83,6 +86,7 @@ class Socket
 private:
     HANDLE m_SimConnectHandle;
     bool m_Connected = false;
+    bool m_RequestPositionData = true;
 public:
     bool ShouldUpdate = false;
 private:
@@ -119,6 +123,10 @@ private:
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT WING LEVELER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT YAW DAMPER", NULL);
         hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_1, "AUTOPILOT HEADING SLOT INDEX", NULL);
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_PLANE_POS, "PLANE LATITUDE", "degree latitude");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_PLANE_POS, "PLANE LONGITUDE", "degree longitude");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_PLANE_POS, "PLANE ALTITUDE", "feet");
+        hr = SimConnect_AddToDataDefinition(m_SimConnectHandle, DEFINITION_PLANE_POS, "AIRSPEED MACH", "mach");
 
         MapClientEventToSimEvent(GROUP0, EVENT_AUTOPILOT, "AP_MASTER");
         MapClientEventToSimEvent(GROUP0, EVENT_AIRSPEED_HOLD, "AP_AIRSPEED_HOLD");
@@ -140,6 +148,8 @@ private:
 
         hr = SimConnect_SetNotificationGroupPriority(m_SimConnectHandle, GROUP0, SIMCONNECT_GROUP_PRIORITY_HIGHEST);
         hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_1, DEFINITION_1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
+        if (m_RequestPositionData)
+            hr = SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_PLANE_POS, DEFINITION_PLANE_POS, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
         m_Connected = true;
         return true;
     }
@@ -184,6 +194,38 @@ public:
     }
 
 
+    void TogglePlanePosData() noexcept
+    {
+        if (IsConnected())
+        {
+            if (m_RequestPositionData)
+            {
+                SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_PLANE_POS, DEFINITION_PLANE_POS, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_NEVER, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
+            }
+            else
+            {
+                SimConnect_RequestDataOnSimObject(m_SimConnectHandle, REQUEST_PLANE_POS, DEFINITION_PLANE_POS, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_VISUAL_FRAME, SIMCONNECT_DATA_REQUEST_FLAG_CHANGED);
+            }
+        }
+        m_RequestPositionData = !m_RequestPositionData;
+    }
+
+
+    void SetTestPosition() const noexcept
+    {
+        SIMCONNECT_DATA_INITPOSITION Init;
+        Init.Altitude = 7000.0;
+        Init.Latitude = 45.41254109849314;
+        Init.Longitude = 12.56128520024438;
+        Init.Pitch = 0.0;
+        Init.Bank = -1.0;
+        Init.Heading = 220;
+        Init.OnGround = 0;
+        Init.Airspeed = 100;
+        SimConnect_SetDataOnSimObject(m_SimConnectHandle, DEFINITION_6, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(Init), &Init);
+    }
+
+
     bool TransmitEvent(EVENT_ID event, DWORD data) const noexcept
     {
         if (!m_Connected)
@@ -194,18 +236,12 @@ public:
     }
 
 
-    // TODO: Remove
-    HANDLE Handle() const noexcept
-    {
-        return m_SimConnectHandle;
-    }
-
-    void Dispatch(Struct1* s)
+    unsigned long Dispatch(Struct1* s)
     {
         DWORD cbData;
         SIMCONNECT_RECV* pData;
         if (FAILED(SimConnect_GetNextDispatch(m_SimConnectHandle, &pData, &cbData)))
-            return;
+            return 0;
 
         switch (pData->dwID)
         {
@@ -271,14 +307,37 @@ public:
                     s->ap_wing_lvl = ps->ap_wing_lvl;
                     s->ap_yaw_damper = ps->ap_yaw_damper;
                     s->ap_heading_idx = ps->ap_heading_idx;
-                    s->updated = true;
+                    s->update_ap = true;
                 }
+                break;
+            }
+            case REQUEST_PLANE_POS:
+            {
+                struct PlanePos
+                {
+                    double lat;
+                    double lon;
+                    double alt;
+                    double speed;
+                };
+
+                PlanePos* pp = (PlanePos*)&pObjData->dwData;
+                s->pos_latitude = pp->lat;
+                s->pos_longitude = pp->lon;
+                s->pos_altitude = pp->alt;
+                s->pos_airspeed = pp->speed;
+                s->update_pos = true;
                 break;
             }
             default:
                 break;
             }
             break;
+        }
+        case SIMCONNECT_RECV_ID_EXCEPTION:
+        {
+            SIMCONNECT_RECV_EXCEPTION * except = (SIMCONNECT_RECV_EXCEPTION*)pData;
+            return except->dwException;
         }
         case SIMCONNECT_RECV_ID_QUIT:
         {
@@ -288,5 +347,6 @@ public:
         default:
             break;
         }
+        return 0;
     }
 };

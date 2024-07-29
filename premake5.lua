@@ -20,18 +20,19 @@ filter { "configurations:Release" }
     symbols "off"
     defines "NDEBUG"
     optimize "Speed"
+    flags "LinkTimeOptimization"
 filter {}
 
--- only for visual studio
+
 flags {
-    "MultiProcessorCompile"
+    "MultiProcessorCompile" -- only for visual studio
 }
 staticruntime "off"
 removeunreferencedcodedata "on"
 
 project "AutoNav"
     language "C++"
-    cppdialect "C++17"
+    cppdialect "C++20"
     characterset "Unicode"
 
     flags "FatalCompileWarnings"
@@ -39,7 +40,7 @@ project "AutoNav"
     externalwarnings "Default"
     buildoptions { "/sdl" }
     disablewarnings "4706"
-    defines "_CRT_SECURE_NO_WARNINGS"
+    defines {"_CRT_SECURE_NO_WARNINGS", "CURL_STATICLIB"}
     ignoredefaultlibraries { "LIBCMT", "LIBCMTD" }
 
     files {
@@ -52,19 +53,43 @@ project "AutoNav"
         "src",
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
+        "Dependencies/ImGui/include",
+        "Dependencies/ImGui/include/ImGui",
+        "Dependencies/ImOsm/include/",
+        "Dependencies/ImOsm/Dependencies/stb",
+        "Dependencies/ImOsm/Dependencies/implot",
+        "Dependencies/ImOsm/Dependencies/latlon",
+        "Dependencies/ImOsm/Dependencies/curl/include",
+        "Dependencies/ImOsm/Dependencies/mINI/src/mini",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
     externalincludedirs {
         "Dependencies/fltk",
         "Dependencies/fltk/Build",
+        "Dependencies/ImGui/include",
+        "Dependencies/ImGui/include/ImGui",
+        "Dependencies/ImOsm/include/",
+        "Dependencies/ImOsm/Dependencies/stb",
+        "Dependencies/ImOsm/Dependencies/implot",
+        "Dependencies/ImOsm/Dependencies/latlon",
+        "Dependencies/ImOsm/Dependencies/curl/include",
+        "Dependencies/ImOsm/Dependencies/mINI/src/mini",
         "$(MSFS_SDK)\\SimConnect SDK\\include"
     }
 
     links {
+        "ImGui",
+        "ImOsm",
+        "ImPlot",
+        "Winmm",
+        "crypt32",
+        "Wldap32",
+        "Normaliz",
         "Gdiplus",
         "comctl32",
         "gdi32",
+        "glu32",
         "opengl32",
         "shell32",
         "Shlwapi",
@@ -85,6 +110,7 @@ project "AutoNav"
 
     libdirs {
         "$(MSFS_SDK)\\SimConnect SDK\\lib\\static",
+        "Dependencies/ImOsm/Dependencies/curl/Binaries/windows/x64"
     }
 
     filter { "configurations:Debug" }
@@ -95,10 +121,13 @@ project "AutoNav"
             "fltk_imagesd",
             "fltk_jpegd",
             "fltk_pngd",
+            "fltk_gld",
             "fltk_zd",
-            "fltkd"
+            "fltkd",
+            "libcurl_a_debug"
         }
         libdirs "Dependencies/fltk/Build/lib/Debug"
+        
     filter { "configurations:Release" }
         kind "WindowedApp"
         links {
@@ -107,8 +136,14 @@ project "AutoNav"
             "fltk_images",
             "fltk_jpeg",
             "fltk_png",
+            "fltk_gl",
             "fltk_z",
-            "fltk"
+            "fltk",
+            "libcurl_a"
         }
         libdirs "Dependencies/fltk/Build/lib/Release"
+        linkoptions { "/OPT:REF", "/OPT:ICF" } -- remove unused sections (code)
         entrypoint "mainCRTStartup"
+
+include "Dependencies/ImGui"
+include "Dependencies/ImOsm"
