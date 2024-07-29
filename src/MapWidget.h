@@ -88,7 +88,7 @@ public:
             m_Initialised = true;
         }
 
-        glDrawBuffer(GL_FRONT_AND_BACK);
+        glDrawBuffer(GL_BACK);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
