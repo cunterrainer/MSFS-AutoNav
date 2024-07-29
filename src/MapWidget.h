@@ -109,6 +109,19 @@ public:
         }
 
         m_MapPlot.paint();
+
+        // License box
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 2, 2 });
+        ImGui::SetCursorPos({ io.DisplaySize.x - 195, io.DisplaySize.y - ImGui::GetTextLineHeight() - 5});
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, { 1.f, 1.f, 1.f, 1.f });
+        ImGui::BeginChild("LicenseBox", ImVec2(0, 0), ImGuiChildFlags_Border);
+        ImGui::TextColored({ 0.f, 0.f, 0.f, 1.f }, "Map data from");
+        ImGui::SameLine();
+        ImGui::TextLinkOpenURL("OpenStreetMap", "https://www.openstreetmap.org/copyright");
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar();
+        ImGui::EndChild();
+
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
         {
             ImGui::OpenPopup("RightClickMenu");
