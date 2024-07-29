@@ -75,6 +75,8 @@ private:
             const std::string planeAltSpeed = std::format("Altitude: {:.0f} feet, Airspeed: {:.2f} Mach", m_Info.pos_altitude, m_Info.pos_airspeed);
             m_PlanePosOut.value(planePos.c_str());
             m_PlaneAltSpeedOut.value(planeAltSpeed.c_str());
+            m_PlanePosOut.activate();
+            m_PlaneAltSpeedOut.activate();
 
             m_MapWidget.SetCoords(m_Info.pos_latitude, m_Info.pos_longitude);
             m_MapWidget.SetPlaneTitle(m_Info.title);
@@ -113,6 +115,7 @@ private:
         SetButtonColor(m_WingLvlBtn, m_Info.ap_wing_lvl);
         SetButtonColor(m_YawDamperBtn, m_Info.ap_yaw_damper);
 
+        m_AirplaneTitleOut.activate();
         m_AirplaneTitleOut.value(m_Info.title);
         m_AirspeedValCounter.value(m_Info.ap_airspeed);
         m_AltitudeCounter.value(m_Info.ap_alt_lock_var);
@@ -146,6 +149,7 @@ private:
     void ResetUI()
     {
         m_Info.title[0] = '\0';
+        m_AirplaneTitleOut.deactivate();
         m_AirplaneTitleOut.value(m_Info.title);
         m_Info.ap_airspeed = 0;
         m_Info.ap_auto_throttle = 0;
@@ -200,6 +204,8 @@ private:
         m_AutopilotBtn.tooltip("Toggle Autopilot");
 
         m_AutopilotBtn.activate();
+        m_PlanePosOut.deactivate();
+        m_PlaneAltSpeedOut.deactivate();
         m_PlanePosOut.value("");
         m_PlaneAltSpeedOut.value("");
         m_MapWidget.Reset();
@@ -371,16 +377,19 @@ public:
         m_AirplaneTitleOut.color(FL_BACKGROUND_COLOR);
         m_AirplaneTitleOut.labeltype(FL_NO_LABEL);
         m_AirplaneTitleOut.visible_focus(false);
+        m_AirplaneTitleOut.deactivate();
 
         m_PlanePosOut.box(FL_FLAT_BOX);
         m_PlanePosOut.color(FL_BACKGROUND_COLOR);
         m_PlanePosOut.labeltype(FL_NO_LABEL);
         m_PlanePosOut.visible_focus(false);
+        m_PlanePosOut.deactivate();
 
         m_PlaneAltSpeedOut.box(FL_FLAT_BOX);
         m_PlaneAltSpeedOut.color(FL_BACKGROUND_COLOR);
         m_PlaneAltSpeedOut.labeltype(FL_NO_LABEL);
         m_PlaneAltSpeedOut.visible_focus(false);
+        m_PlaneAltSpeedOut.deactivate();
 
         m_ConnectBtn.color(FL_RED);
         m_ConnectBtn.callback(OnConnectClicked, this);
