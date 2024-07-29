@@ -223,7 +223,6 @@ public:
         Init.OnGround = 0;
         Init.Airspeed = 100;
         SimConnect_SetDataOnSimObject(m_SimConnectHandle, DEFINITION_6, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(Init), &Init);
-
     }
 
 
