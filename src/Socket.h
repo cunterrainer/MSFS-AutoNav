@@ -48,7 +48,7 @@ enum DATA_REQUEST_ID {
 
 struct Struct1
 {
-    char   title[256];
+    char   title[256] = { 0 };
     double ap;
     double ap_available;
     double ap_airspeed;
