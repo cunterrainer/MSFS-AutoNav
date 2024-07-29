@@ -622,16 +622,7 @@ public:
 
     void SetPosition() const noexcept
     {
-        SIMCONNECT_DATA_INITPOSITION Init;
-        Init.Altitude = 5000.0;
-        Init.Latitude = 48.353834871306226;
-        Init.Longitude = 11.77422621968804;
-        Init.Pitch = 0.0;
-        Init.Bank = -1.0;
-        Init.Heading = 360;
-        Init.OnGround = 0;
-        Init.Airspeed = 100;
-        SimConnect_SetDataOnSimObject(m_Socket.Handle(), DEFINITION_6, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(Init), &Init);
+        m_Socket.SetTestPosition();
     }
 
     inline void Show() noexcept

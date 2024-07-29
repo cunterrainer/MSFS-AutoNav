@@ -211,6 +211,22 @@ public:
     }
 
 
+    void SetTestPosition() const noexcept
+    {
+        SIMCONNECT_DATA_INITPOSITION Init;
+        Init.Altitude = 7000.0;
+        Init.Latitude = 45.41254109849314;
+        Init.Longitude = 12.56128520024438;
+        Init.Pitch = 0.0;
+        Init.Bank = -1.0;
+        Init.Heading = 220;
+        Init.OnGround = 0;
+        Init.Airspeed = 100;
+        SimConnect_SetDataOnSimObject(m_SimConnectHandle, DEFINITION_6, SIMCONNECT_OBJECT_ID_USER, 0, 0, sizeof(Init), &Init);
+
+    }
+
+
     bool TransmitEvent(EVENT_ID event, DWORD data) const noexcept
     {
         if (!m_Connected)
@@ -220,12 +236,6 @@ public:
         return true;
     }
 
-
-    // TODO: Remove
-    HANDLE Handle() const noexcept
-    {
-        return m_SimConnectHandle;
-    }
 
     unsigned long Dispatch(Struct1* s)
     {
