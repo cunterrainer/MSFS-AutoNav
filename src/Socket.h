@@ -70,10 +70,10 @@ struct Struct1
     double ap_yaw_damper;
     double ap_heading_idx;
 
-    double pos_latitude;
-    double pos_longitude;
-    double pos_altitude;
-    double pos_airspeed;
+    double pos_latitude = 0.0;
+    double pos_longitude = 0.0;
+    double pos_altitude = 0.0;
+    double pos_airspeed = 0.0;
 
     bool update_ap = false;
     bool update_pos = false;

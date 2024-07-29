@@ -155,6 +155,10 @@ private:
         m_Info.ap_alt_manually_adjustable = 0;
         m_Info.ap_heading_manually_adjustable = 0;
         m_HeadingSlotChoice.value(-1);
+        m_Info.pos_airspeed = 0;
+        m_Info.pos_altitude = 0;
+        m_Info.pos_latitude = 0;
+        m_Info.pos_longitude = 0;
 
         m_AutopilotBtn.color(FL_BACKGROUND_COLOR);
         m_AirspeedHoldBtn.color(FL_BACKGROUND_COLOR);
