@@ -615,6 +615,16 @@ public:
     inline void PlaneAltChecked() noexcept
     {
         m_Socket.TogglePlanePosData();
+        if (m_MapWidget.active())
+        {
+            m_MapWidget.tooltip("Disabled");
+            m_MapWidget.deactivate();
+        }
+        else
+        {
+            m_MapWidget.tooltip(NULL);
+            m_MapWidget.activate();
+        }
     }
 
 
@@ -633,6 +643,7 @@ public:
     {
         m_Socket.SetTestPosition();
     }
+
 
     inline void Show() noexcept
     {
@@ -654,7 +665,8 @@ public:
                 }
                 UpdateUI();
             }
-            m_MapWidget.redraw();
+            if (m_MapWidget.active())
+                m_MapWidget.redraw();
         }
     }
 };

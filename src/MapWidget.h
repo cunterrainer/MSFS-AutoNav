@@ -2,6 +2,7 @@
 #include <cmath>
 #include <numbers>
 #include <algorithm>
+#include <wingdi.h>
 
 #include <FL/x.H>
 #include <FL/Fl.H>
@@ -10,13 +11,12 @@
 #include <FL/Fl_Gl_Window.H>
 
 #include "ImGui/imgui.h"
-#include "ImOsm/imosm.h"
+#include "ImOsm/ImOsm.h"
 #include "ImOsm/imosm_rich.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "ImGui/imgui_impl_opengl3.h"
 #undef min
 #undef max
-
 
 class MapWidget : public Fl_Gl_Window
 {
@@ -56,6 +56,20 @@ public:
         {
             glClearColor(.1f, .1f, .1f, 1);
             glEnable(GL_DEPTH_TEST);
+
+            // Disable VSync
+            const HDC hDC = wglGetCurrentDC();
+            const HGLRC hGLRC = wglGetCurrentContext();
+
+            if (hDC && hGLRC)
+            {
+                typedef BOOL(APIENTRY* PFNWGLSWAPINTERVALEXTPROC)(int);
+                PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+                if (wglSwapIntervalEXT)
+                {
+                    wglSwapIntervalEXT(0);
+                }
+            }
 
             ImGui::CreateContext();
             ImPlot::CreateContext();
@@ -139,7 +153,6 @@ public:
         ImGui::End();
         ImGui::PopStyleVar();
         ImPlot::PopStyleVar();
-
         // OpenGL code end
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
