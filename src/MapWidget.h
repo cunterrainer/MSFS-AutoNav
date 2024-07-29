@@ -1,4 +1,8 @@
 #pragma once
+#include <cmath>
+#include <numbers>
+#include <algorithm>
+
 #include <FL/x.H>
 #include <FL/Fl.H>
 #include <gl/GL.h>
@@ -10,11 +14,15 @@
 #include "ImOsm/imosm_rich.h"
 #include "ImGui/imgui_impl_win32.h"
 #include "ImGui/imgui_impl_opengl3.h"
+#undef min
+#undef max
 
 
 class MapWidget : public Fl_Gl_Window
 {
 private:
+    int m_FollowZoom = 10;
+    bool m_FollowAircraft = false;
     bool m_Initialised = false;
     ImOsm::Rich::RichMapPlot m_MapPlot;
     std::shared_ptr<ImOsm::Rich::MarkItem> m_Item = std::make_shared<ImOsm::Rich::MarkItem>(ImOsm::Rich::MarkItem({ 0, 0 }, ""));
@@ -80,7 +88,40 @@ public:
         ImGui::SetNextWindowSize({ io.DisplaySize.x, io.DisplaySize.y });
         ImGui::Begin("#Map", (bool*)0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 
+        if (m_FollowAircraft)
+        {
+            const float aspectRatio = io.DisplaySize.x / io.DisplaySize.y;
+            const float centerLat = (float)m_Item->geoCoords().lat;
+            const float centerLon = (float)m_Item->geoCoords().lon;
+            const float latRange = (float)m_FollowZoom;
+
+            // Calculate longitude range based on latitude to account for projection distortions
+            // Adjust longitude range more precisely based on latitude
+            const float scalingFactor = 1.0f / cos(centerLat * std::numbers::pi_v<float> / 180.0f);
+            const float lonRange = latRange * aspectRatio * scalingFactor;
+
+            m_MapPlot.setBoundsGeo(
+                centerLat - latRange,  // min latitude
+                centerLat + latRange,  // max latitude
+                centerLon - lonRange,  // min longitude
+                centerLon + lonRange   // max longitude
+            );
+        }
+
         m_MapPlot.paint();
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+        {
+            ImGui::OpenPopup("RightClickMenu");
+        }
+
+        if (ImGui::BeginPopup("RightClickMenu"))
+        {
+            if (ImGui::MenuItem(m_FollowAircraft ? "Follow aircraft (True)" : "Follow aircraft (False)"))
+            {
+                m_FollowAircraft = !m_FollowAircraft;
+            }
+            ImGui::EndPopup();
+        }
 
         ImGui::End();
         ImGui::PopStyleVar();
@@ -108,6 +149,17 @@ public:
             return 1;
         case FL_MOUSEWHEEL:
             io.AddMouseWheelEvent(0.0f, static_cast<float>(-Fl::event_dy()));
+            if (m_FollowAircraft)
+            {
+                if (Fl::event_dy() < 0)
+                {
+                    m_FollowZoom = std::max(1, m_FollowZoom - 1);
+                }
+                else
+                {
+                    m_FollowZoom = std::min(17, m_FollowZoom + 1);
+                }
+            }
             return 1;
         default:
             break;
